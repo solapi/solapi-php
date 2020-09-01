@@ -1,14 +1,8 @@
-# coolsms-v4-php
+# SOLAPI PHP
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Introduction
-- PHP용 쿨에스엠에스 SDK
-
-## Usage
-
-### Composer
-
-### Manual Installation
+- PHP용 솔라피 SDK
 
 ## Pull Requests
 Please use issues section for any suggestions and issues.

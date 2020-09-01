@@ -4,7 +4,6 @@ $config = json_decode($configFile, true);
 
 function get_header() {
   global $config;
-  # apiKey && apiSecret are acquired from coolsms.co.kr/credentials
   $apiKey = $config["apiKey"];
   $apiSecret = $config["apiSecret"];
   date_default_timezone_set('Asia/Seoul');
