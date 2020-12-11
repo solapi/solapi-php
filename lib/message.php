@@ -191,7 +191,6 @@ function send_one_message($to, $from, $text, $subject = null, $imageId = null) {
   $message->text = $text;
   $message->to = $to;
   $message->from = $from;
-  $message->type = 'LMS';
   if ($subject) $message->subject = $subject;
   if ($imageId) $message->imageId = $imageId;
   $params->message = $message;
