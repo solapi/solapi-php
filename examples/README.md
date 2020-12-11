@@ -1,8 +1,8 @@
 ### 문자 발송 예제
 ```
-send_sms.php:  SMS 발송 예제
-send_lms.php:  LMS 발송 예제
-send_mms.php:  MMS 발송 예제
+send_sms.php                SMS 발송 예제
+send_lms.php                LMS 발송 예제
+send_mms.php                MMS 발송 예제
 ```
 
 ### 알림톡 발송 예제
@@ -30,5 +30,6 @@ group_send_messages.php     그룹 메시지 전송(종합 예제)
 
 ### 기타
 ```
+send_oversea.php            해외 발송
 auto_type_detect.php        Auto Type Detect 예제
 ```
