@@ -1,6 +1,6 @@
 <?php
-$configFile = file_get_contents("../config.json");
-$config = json_decode($configFile, true);
+require_once("../config.php");
+$config = get_config();
 
 function get_header() {
   global $config;
@@ -31,7 +31,6 @@ function request($method, $resource, $data = false) {
       default: // GET
         if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
     }
-    echo $url;
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(get_header(), "Content-Type: application/json"));
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -54,7 +53,6 @@ function create_group() {
   $params = new stdClass();
   $params->sdkVersion = 'PHP-SDK v4.0';
   $params->osPlatform = PHP_OS . ', PHP Version ' . phpversion();
-  print_r($params);
   $result = request("POST", "/messages/v4/groups", $params);
   return $result->groupId;
 }
@@ -137,20 +135,16 @@ function get_group_messages($groupId) {
   return  request("GET", "/messages/v4/groups/{$groupId}/messages");
 }
 
-function send_message($groupId) {
+function send_group($groupId) {
   return request("POST", "/messages/v4/groups/{$groupId}/send");
 }
 
 function delete_messages($groupId, $messageIds = []) {
-  echo "MESSAGE IDS\n";
-  print_r($messageIds);
-  echo "END OF MESSAGE IDS\n";
-  $params = new stdClass();
   if (!is_array($messageIds)) $messageIds = array($messageIds);
-  $params->messageIds = $messageIds;
-  echo "PARAMS\n";
+  $params = array(
+    "messageIds" => $messageIds
+  );
   print_r($params);
-  echo "END OF PARAMS\n";
   return request("DELETE", "/messages/v4/groups/{$groupId}/messages", $params);
 }
 
@@ -201,4 +195,22 @@ function send_one_message($to, $from, $text, $subject = null, $imageId = null) {
   if ($imageId) $message->imageId = $imageId;
   $params->message = $message;
   return send_one_message_params($params);
+}
+
+function send_messages($messages) {
+  $params = array(
+    "agent" => array(
+      "sdkVersion" => "PHP-SDK v4.0",
+      "osPlatform" => PHP_OS . ", PHP Version " . phpversion()
+    ),
+    "messages" => $messages
+  );
+  return request("POST", "/messages/v4/send-many", $params);
+}
+
+function add_messages($groupId, $messages) {
+  $params = array(
+    "messages" => $messages
+  );
+  return add_message_params($groupId, $params);
 }

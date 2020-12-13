@@ -4,3 +4,4 @@ log.txt
 out/
 *.swp
 .idea/
+config.php
