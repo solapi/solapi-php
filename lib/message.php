@@ -214,3 +214,7 @@ function add_messages($groupId, $messages) {
   );
   return add_message_params($groupId, $params);
 }
+
+function get_balance() {
+  return request("GET", "/cash/v1/balance");
+}
