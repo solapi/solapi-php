@@ -218,3 +218,8 @@ function add_messages($groupId, $messages) {
 function get_balance() {
   return request("GET", "/cash/v1/balance");
 }
+
+function get_messages($data) {
+  if (!$data) $data = new stdClass();
+  return request("GET", "/messages/v4/list", $data);
+}
