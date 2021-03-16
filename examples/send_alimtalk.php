@@ -21,7 +21,8 @@ $messages = array(
     "text" => "김길동님 가입을 환영합니다.",
     "kakaoOptions" => array(
       "pfId" => "KA01PF200323182344986oTFz9CIabcx",
-      "templateId" => "KA01TP200323182345741y9yF20aabcx"
+      "templateId" => "KA01TP200323182345741y9yF20aabcx",
+      "disableSms" => TRUE // 문자로 대체발송되지 않도록 합니다.
     )
   ),
   array(
