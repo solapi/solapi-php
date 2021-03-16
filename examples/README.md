@@ -18,6 +18,12 @@ send_chingutalk_button.php  친구톡 버튼 발송 예제
 message_list(디렉토리)      메시지 목록 조회
 ```
 
+### 카카오톡
+```
+kakaotalk_channels(디렉토리)  카카오톡채널 조회
+kakaotalk_templates(디렉토리) 알림톡 템플릿 조회
+```
+
 ### 그룹 발송 예제
 ```
 group_create.php            그룹 생성
