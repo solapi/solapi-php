@@ -2,7 +2,7 @@
 /*
  * 최대 1만건의 알림톡(버튼)을 한번의 요청으로 발송 가능합니다.
  * 버튼 부분도 등록된 템플릿의 버튼과 버튼타입, 버튼이름, 링크URL이 100% 일치해야 합니다.
- * 버튼 종류(AL: 앱링크, WL: 웹링크, DS: 배송조회, BK: 키워드, MD: 전달)
+ * 버튼 종류(AL: 앱링크, WL: 웹링크, DS: 배송조회, BK: 키워드, MD: 전달, AC: 채널 추가, BC: 상담톡 전환, BT: 봇 전환)
  */
 require_once("../lib/message.php");
 $messages = array(
@@ -86,7 +86,52 @@ $messages = array(
     )
   ),
   array(
-    "to" => array("01000010006", "01000010007"), // 수신번호에 array 사용으로 같은 내용으로 여러명에게 전송
+    "to" => "01000010006",
+    "from" => "029302266",
+    "text" => "안녕하세요 홍길동님, 채널추가 버튼을 눌러 친구추가하실 수 있습니다.",
+    "kakaoOptions" => array(
+      "pfId" => "KA01PF200323182344986oTFz9CIabcx",
+      "templateId" => "KA01TP200323182345741y9yF20aabcx",
+      "buttons" => array(
+        array(
+          "buttonType" => "AC",
+          "buttonName" => "채널추가"
+        )
+      )
+    )
+  ),
+  array(
+    "to" => "01000010007",
+    "from" => "029302266",
+    "text" => "안녕하세요 홍길동님, 상담톡으로 전환할 수 있습니다. (상담톡 서비스 사용 시 가능)",
+    "kakaoOptions" => array(
+      "pfId" => "KA01PF200323182344986oTFz9CIabcx",
+      "templateId" => "KA01TP200323182345741y9yF20aabcx",
+      "buttons" => array(
+        array(
+          "buttonType" => "BC",
+          "buttonName" => "상담톡 전환"
+        )
+      )
+    )
+  ),
+  array(
+    "to" => "01000010008",
+    "from" => "029302266",
+    "text" => "안녕하세요 홍길동님, 챗봇 문의를 시작할 수 있습니다. (챗봇 사용 시 가능)",
+    "kakaoOptions" => array(
+      "pfId" => "KA01PF200323182344986oTFz9CIabcx",
+      "templateId" => "KA01TP200323182345741y9yF20aabcx",
+      "buttons" => array(
+        array(
+          "buttonType" => "BT",
+          "buttonName" => "챗봇 문의"
+        )
+      )
+    )
+  ),
+  array(
+    "to" => array("01000010009", "01000010010"), // 수신번호에 array 사용으로 같은 내용으로 여러명에게 전송
     "from" => "029302266",
     "text" => "모두님 가입을 환영합니다.",
     "kakaoOptions" => array(
