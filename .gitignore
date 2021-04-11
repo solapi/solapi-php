@@ -5,3 +5,4 @@ out/
 *.swp
 .idea/
 config.php
+*.real.php
