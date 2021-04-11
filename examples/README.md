@@ -13,6 +13,12 @@ send_chingutalk.php         친구톡 발송 예제
 send_chingutalk_button.php  친구톡 버튼 발송 예제
 ````
 
+### 네이버 톡톡 발송 예제
+```
+send_naver.php            네이버톡톡(스마트알림) 발송(버튼 포함) 예제
+````
+
+
 ### 메시지 조회
 ```
 message_list(디렉토리)      메시지 목록 조회
