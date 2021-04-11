@@ -29,8 +29,8 @@ $messages = array(
         array(
           "buttonType" => "WL",
           "buttonCode" => "btn1", // 버튼 코드를 입력하세요. (템플릿 상세보기에서 확인 가능)
-          "linkMo" => "https://www.example.com/",
-          "linkPc" => "https://www.example.com/"
+          "linkMo" => "https://www.example.com/", // URL은 자유롭게 입력 가능
+          "linkPc" => "https://www.example.com/" // URL은 자유롭게 입력 가능
         )
       )
     )
