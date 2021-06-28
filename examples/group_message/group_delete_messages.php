@@ -2,7 +2,7 @@
 /*
  그룹 메시지 삭제
 */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 
 $groupId = create_group();
 $result = add_messages($groupId, array(

@@ -4,7 +4,7 @@
  * 등록되어 있는 템플릿의 변수 부분을 제외한 나머지 부분(상수)은 100% 일치해야 합니다.
  * 템플릿 내용이 "#{이름}님 가입을 환영합니다."으로 등록되어 있는 경우 변수 #{이름}을 홍길동으로 치환하여 "홍길동님 가입을 환영합니다."로 입력해 주세요.
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 $messages = array(
   array(
     "type" => "NSA",

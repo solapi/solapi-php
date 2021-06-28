@@ -2,10 +2,10 @@
 /*
  * 한번의 요청으로 1만건까지 MMS 이미지 발송이 가능합니다.
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 
 // 발송할 이미지를 먼저 업로드합니다.
-$imageId = create_image(realpath("./testImage.jpg"));
+$imageId = create_image(realpath("../testImage.jpg"));
 
 $messages = array(
   array(
