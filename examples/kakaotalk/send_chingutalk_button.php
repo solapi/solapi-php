@@ -5,7 +5,7 @@
  * 템플릿 등록없이 버튼을 포함하여 자유롭게 메시지 전송이 가능합니다.
  * 버튼 종류(AL: 앱링크, WL: 웹링크, BK: 키워드, MD: 전달)
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 $messages = array(
   array(
     "to" => "01000010001",

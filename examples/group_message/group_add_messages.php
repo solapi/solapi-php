@@ -1,17 +1,17 @@
 <?php
 /*
- 그룹메시지 발송
+  그룹메시지 추가 예제 
 */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
+
+// 그룹생성
+$groupId = create_group();
 
 // 발송할 이미지를 먼저 업로드합니다.
 $imageId = create_image(realpath("./testImage.jpg"));
 
-// 그룹 생성
-$groupId = create_group();
-
 // 메시지 추가
-add_messages($groupId, array(
+print_r(add_messages($groupId, array(
   array(
     "to" => "01000010001",
     "from" => "029302266",
@@ -58,10 +58,4 @@ add_messages($groupId, array(
     "from" => "029302266",
     "text" => "한글 45자, 영자 90자 이상 입력되면 자동으로 LMS타입의 문자메시지가 발송됩니다. 0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   )
-));
-
-// 접수 현황 확인
-print_r(get_group_info($groupId));
-
-// 발송
-print_r(send_group($groupId));
+)));

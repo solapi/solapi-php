@@ -4,7 +4,7 @@
  * 카카오톡채널 친구로 추가되어 있어야 친구톡 발송이 가능합니다.
  * 템플릿 등록없이 버튼을 포함하여 자유롭게 메시지 전송이 가능합니다. 
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 $messages = array(
   array(
     "to" => "01000010001",

@@ -2,7 +2,7 @@
 /*
   그룹메시지 발송(MMS 이미지)
 */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 
 $groupId = create_group();
 $imageId = create_image(realpath("./testImage.jpg"));

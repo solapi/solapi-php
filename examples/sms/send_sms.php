@@ -2,7 +2,7 @@
 /*
  * SMS 문자메시지 보내기
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 $messages = array(
   array(
     "to" => "01000010001",

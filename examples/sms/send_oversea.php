@@ -2,7 +2,7 @@
 /*
  * 해외 SMS 보내기
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 $messages = array(
   array(
     "country" => "1", // 미국으로 발송

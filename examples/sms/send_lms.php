@@ -3,7 +3,7 @@
  * LMS 발송 예제
  * subject 입력이 없는 경우 자동으로 내용 앞 부분을 LMS 제목으로 사용합니다.
  */
-require_once("../lib/message.php");
+require_once("../../lib/message.php");
 $messages = array(
   array(
     "to" => "01000010001",
