@@ -120,15 +120,27 @@ function create_image_params($params) {
   return request("POST", "/storage/v1/files", $params);
 }
 
-function create_image($path) {
-  $type = pathinfo($path, PATHINFO_EXTENSION);
+// MMS | RCS | KAKAO
+function create_image_type($path, $type) {
+  // $type = pathinfo($path, PATHINFO_EXTENSION);
   $data = file_get_contents($path);
   $imageData = base64_encode($data);
   $params = new stdClass();
-  $params->type = "MMS";
+  $params->type = $type;
   $params->file = $imageData;
+  print_r($params);
   $image_info = create_image_params($params);
+  print_r($image_info);
+  echo $image_info->fileId;
   return $image_info->fileId;
+}
+
+function create_image($path) {
+  return create_image_type($path, 'MMS');
+}
+
+function create_rcs_image($path) {
+  return create_image_type($path, 'RCS');
 }
 
 function get_group_messages($groupId) {
@@ -139,7 +151,7 @@ function send_group($groupId) {
   return request("POST", "/messages/v4/groups/{$groupId}/send");
 }
 
-function delete_messages($groupId, $messageIds = []) {
+function delete_messages($groupId, $messageIds = array()) {
   if (!is_array($messageIds)) $messageIds = array($messageIds);
   $params = array(
     "messageIds" => $messageIds
@@ -148,7 +160,7 @@ function delete_messages($groupId, $messageIds = []) {
   return request("DELETE", "/messages/v4/groups/{$groupId}/messages", $params);
 }
 
-function send_one_alimtalk($pfId, $templateId, $to, $from, $text, $buttons = []) {
+function send_one_alimtalk($pfId, $templateId, $to, $from, $text, $buttons = array()) {
   $kakaoOptions = new stdClass();
   $kakaoOptions->pfId = $pfId;
   $kakaoOptions->templateId = $templateId;
@@ -165,7 +177,7 @@ function send_one_alimtalk($pfId, $templateId, $to, $from, $text, $buttons = [])
   return request("POST", "/messages/v4/send", $params);
 }
 
-function send_one_chingutalk($pfId, $to, $from, $text, $buttons = []) {
+function send_one_chingutalk($pfId, $to, $from, $text, $buttons = array()) {
   $kakaoOptions = new stdClass();
   $kakaoOptions->pfId = $pfId;
   if (count($buttons) > 0) $kakaoOptions->buttons = $buttons;
