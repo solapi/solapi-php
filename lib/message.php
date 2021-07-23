@@ -128,10 +128,7 @@ function create_image_type($path, $type) {
   $params = new stdClass();
   $params->type = $type;
   $params->file = $imageData;
-  print_r($params);
   $image_info = create_image_params($params);
-  print_r($image_info);
-  echo $image_info->fileId;
   return $image_info->fileId;
 }
 
@@ -156,7 +153,6 @@ function delete_messages($groupId, $messageIds = array()) {
   $params = array(
     "messageIds" => $messageIds
   );
-  print_r($params);
   return request("DELETE", "/messages/v4/groups/{$groupId}/messages", $params);
 }
 
