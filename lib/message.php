@@ -120,7 +120,7 @@ function create_image_params($params) {
   return request("POST", "/storage/v1/files", $params);
 }
 
-// MMS | RCS | KAKAO
+// MMS | RCS
 function create_image_type($path, $type) {
   // $type = pathinfo($path, PATHINFO_EXTENSION);
   $data = file_get_contents($path);
@@ -138,6 +138,19 @@ function create_image($path) {
 
 function create_rcs_image($path) {
   return create_image_type($path, 'RCS');
+}
+
+// 친구톡 이미지
+function create_kakao_image($path, $link) {
+  // $type = pathinfo($path, PATHINFO_EXTENSION);
+  $data = file_get_contents($path);
+  $imageData = base64_encode($data);
+  $params = new stdClass();
+  $params->type = "KAKAO";
+  $params->file = $imageData;
+  $params->link = $link;
+  $image_info = create_image_params($params);
+  return $image_info->fileId;
 }
 
 function get_group_messages($groupId) {
