@@ -13,7 +13,7 @@ function get_header() {
   return "Authorization: HMAC-SHA256 apiKey={$apiKey}, date={$date}, salt={$salt}, signature={$signature}";
 }
 
-function request($method, $resource, $data = false) {
+function request($method, $resource, $data = false, $headers = null) {
   global $config;
   $url = "{$config['protocol']}://{$config['domain']}";
   if ($config['prefix']) $url .= $config['prefix'];
@@ -31,7 +31,10 @@ function request($method, $resource, $data = false) {
       default: // GET
         if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
     }
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array(get_header(), "Content-Type: application/json"));
+    $http_headers = array(get_header(), "Content-Type: application/json");
+    if (is_array($headers)) $http_headers = array_merge($http_headers, $headers);
+    print_r($http_headers);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $http_headers);
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     if (curl_error($curl)) {
