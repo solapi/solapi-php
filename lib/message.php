@@ -33,7 +33,6 @@ function request($method, $resource, $data = false, $headers = null) {
     }
     $http_headers = array(get_header(), "Content-Type: application/json");
     if (is_array($headers)) $http_headers = array_merge($http_headers, $headers);
-    print_r($http_headers);
     curl_setopt($curl, CURLOPT_HTTPHEADER, $http_headers);
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
