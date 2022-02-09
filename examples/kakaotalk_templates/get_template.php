@@ -15,12 +15,12 @@ echo "템플릿명: {$res->name}\n";
 echo "버튼\n";
 echo "내용: {$res->content}\n";
 foreach ($res->buttons as $button) {
-  echo "  버튼타입: {$button->buttonType}\n";
-  echo "  버튼이름: {$button->buttonName}\n";
-  echo "  모바일링크: {$button->linkMo}\n";
-  echo "  PC링크: {$button->linkPc}\n";
-  echo "  안드로이드링크: {$button->linkAnd}\n";
-  echo "  iOS링크: {$button->linkIos}\n";
+    echo "  버튼타입: {$button->buttonType}\n";
+    echo "  버튼이름: {$button->buttonName}\n";
+    echo "  모바일링크: {$button->linkMo}\n";
+    echo "  PC링크: {$button->linkPc}\n";
+    echo "  안드로이드링크: {$button->linkAnd}\n";
+    echo "  iOS링크: {$button->linkIos}\n";
 }
 echo "숨김처리: {$res->isHidden}\n";
 echo "등록일: {$res->dateCreated}\n";

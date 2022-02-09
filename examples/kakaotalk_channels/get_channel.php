@@ -5,6 +5,5 @@
 require_once("../../lib/message.php");
 
 // 조회할 채널의 PFID 입력
-$pfId = "KA01PF190626020502205cl0mYSoplC1";
-
+$pfId = "";
 print_r(request("GET", "/kakao/v1/plus-friends/{$pfId}"));

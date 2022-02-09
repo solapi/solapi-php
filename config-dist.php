@@ -1,8 +1,8 @@
 <?php
 function get_config() {
   return array(
-    "apiKey" => "NCSVYGF1IK5PUKDA",
-    "apiSecret" => "FSD4ER2WYPZQVDBPKMLOZVAWTGYBDTRW",
+    "apiKey" => "INPUT API KEY",
+    "apiSecret" => "INPUT API SECRET KEY",
     "protocol" => "https",
     "domain" => "api.solapi.com",
     "prefix" => ""

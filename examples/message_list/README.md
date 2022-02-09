@@ -1,5 +1,5 @@
-
 ### 메시지 조회
+
 ```
 simple_list.php         기본 예제
 print_details.php       메시지 상세 항목 출력

@@ -9,13 +9,13 @@ $limit = 5;
 
 // Page 1
 $page1 = request("GET", "/kakao/v1/plus-friends", array(
-  "limit" => $limit
+    "limit" => $limit
 ));
 print_r($page1);
 
 // Page 2
 $page2 = request("GET", "/kakao/v1/plus-friends", array(
-  "limit" => $limit,
-  "startKey" => $page1->nextKey
+    "limit" => $limit,
+    "startKey" => $page1->nextKey
 ));
 print_r($page2);

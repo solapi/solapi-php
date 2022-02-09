@@ -6,20 +6,20 @@
  */
 require_once("../../lib/message.php");
 $messages = array(
-  array(
-    "to" => "01048597580",
-    "from" => "029302266",
-    "kakaoOptions" => array(
-      "pfId" => "KA01PF190626020502205cl0mYSoplC1",
-      "templateId" => "KA01TP210419012747059CtAoHvBCw4A",
-      "variables" => array(
-        "#{솔라피}" => "솔라피",
-        "#{회원}" => "홍길동",
-        "#{일일발송량 관리 페이지}" => "관리 페이지",
-        "#{추가정보}" => "추가 정보",
-        "#{link}" => "solapi.com/sms",
-      )
+    array(
+        "to" => "01048597580",
+        "from" => "029302266",
+        "kakaoOptions" => array(
+            "pfId" => "KA01PF190626020502205cl0mYSoplC1",
+            "templateId" => "KA01TP210419012747059CtAoHvBCw4A",
+            "variables" => array(
+                "#{솔라피}" => "솔라피",
+                "#{회원}" => "홍길동",
+                "#{일일발송량 관리 페이지}" => "관리 페이지",
+                "#{추가정보}" => "추가 정보",
+                "#{link}" => "solapi.com/sms",
+            )
+        )
     )
-  )
 );
 print_r(send_messages($messages));

@@ -24,10 +24,16 @@ echo <<<EOT
 일 평균 실패 건수: {$res->dailyFailedCountAvg}
 
 EOT;
-echo "환급정보: "; print_r($res->refund);
-echo "메시지 타입별 전체 건수: "; print_r($res->total);
-echo "메시지 타입별 성공 건수: "; print_r($res->successed);
-echo "메시지 타입별 실패 건수: "; print_r($res->failed);
+echo "환급정보: ";
+print_r($res->refund);
+echo "메시지 타입별 전체 건수: ";
+print_r($res->total);
+echo "메시지 타입별 성공 건수: ";
+print_r($res->successed);
+echo "메시지 타입별 실패 건수: ";
+print_r($res->failed);
 
-echo "월별 통계: "; print_r($res->monthPeriod);
-echo "일별 통계: "; print_r($res->dayPeriod);
+echo "월별 통계: ";
+print_r($res->monthPeriod);
+echo "일별 통계: ";
+print_r($res->dayPeriod);
