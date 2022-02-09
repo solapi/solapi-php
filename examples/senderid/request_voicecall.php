@@ -10,14 +10,14 @@ require_once("../../lib/message.php");
 $phoneNumber = '01000000001';
 
 $authInfo = array(
-  'authType' => 'ARS',
-  'extras' => array(
-    'phoneNumber' => $phoneNumber
-  )
+    'authType' => 'ARS',
+    'extras' => array(
+        'phoneNumber' => $phoneNumber
+    )
 );
 
 $headers = array(
-  'x-mfa-data: ' . json_encode($authInfo)
+    'x-mfa-data: ' . json_encode($authInfo)
 );
 
 $path = sprintf('/senderid/v1/numbers/%s/authenticate', $phoneNumber);

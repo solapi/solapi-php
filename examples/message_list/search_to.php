@@ -5,7 +5,7 @@
 require_once("../../lib/message.php");
 
 $params = array(
-  "to" => '수신번호 입력', // 조회할 수신번호 입력
+    "to" => '수신번호 입력', // 조회할 수신번호 입력
 );
 $res = get_messages($params);
 print_r($res);

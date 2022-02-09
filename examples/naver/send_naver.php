@@ -6,35 +6,35 @@
  */
 require_once("../../lib/message.php");
 $messages = array(
-  array(
-    "type" => "NSA",
-    "to" => "01000000001",
-    "from" => "029302266",
-    "text" => "홍길동님 가입을 환영합니다.",
-    "naverOptions" => array(
-      "talkId" => "NA01TK210309221311111uPDDRgz4dG2",
-      "templateId" => "NA01TP2104050534081111ins9Kzo131"
-    )
-  ),
-  // 버튼 예제
-  array(
-    "type" => "NSA",
-    "to" => "01000000001",
-    "from" => "029302266",
-    "text" => "홍길동님 가입을 환영합니다.",
-    "naverOptions" => array(
-      "talkId" => "NA01TK210309221311111uPDDRgz4dG2",
-      "templateId" => "NA01TP2104050534081111ins9Kzo132",
-      "buttons" => array(
-        array(
-          "buttonType" => "WL",
-          "buttonCode" => "btn1", // 버튼 코드를 입력하세요. (템플릿 상세보기에서 확인 가능)
-          "linkMo" => "https://www.example.com/", // URL은 자유롭게 입력 가능
-          "linkPc" => "https://www.example.com/" // URL은 자유롭게 입력 가능
+    array(
+        "type" => "NSA",
+        "to" => "01000000001",
+        "from" => "029302266",
+        "text" => "홍길동님 가입을 환영합니다.",
+        "naverOptions" => array(
+            "talkId" => "NA01TK210309221311111uPDDRgz4dG2",
+            "templateId" => "NA01TP2104050534081111ins9Kzo131"
         )
-      )
-    )
-  ),
-  // 계속해서 1만건 추가 가능.
+    ),
+    // 버튼 예제
+    array(
+        "type" => "NSA",
+        "to" => "01000000001",
+        "from" => "029302266",
+        "text" => "홍길동님 가입을 환영합니다.",
+        "naverOptions" => array(
+            "talkId" => "NA01TK210309221311111uPDDRgz4dG2",
+            "templateId" => "NA01TP2104050534081111ins9Kzo132",
+            "buttons" => array(
+                array(
+                    "buttonType" => "WL",
+                    "buttonCode" => "btn1", // 버튼 코드를 입력하세요. (템플릿 상세보기에서 확인 가능)
+                    "linkMo" => "https://www.example.com/", // URL은 자유롭게 입력 가능
+                    "linkPc" => "https://www.example.com/" // URL은 자유롭게 입력 가능
+                )
+            )
+        )
+    ),
+    // 계속해서 1만건 추가 가능.
 );
 print_r(send_messages($messages));

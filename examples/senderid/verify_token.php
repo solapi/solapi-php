@@ -15,16 +15,16 @@ $transactionId = 'cc4f482bcf167f69f2b15fcfd044f509';
 $token = '1586';
 
 $authInfo = array(
-  'authType' => 'ARS',
-  'extras' => array(
-    'phoneNumber' => $phoneNumber
-  ),
-  'transactionId' => $transactionId,
-  'token' => $token
+    'authType' => 'ARS',
+    'extras' => array(
+        'phoneNumber' => $phoneNumber
+    ),
+    'transactionId' => $transactionId,
+    'token' => $token
 );
 
 $headers = array(
-  'x-mfa-data: ' . json_encode($authInfo)
+    'x-mfa-data: ' . json_encode($authInfo)
 );
 
 $path = sprintf('/senderid/v1/numbers/%s/authenticate', $phoneNumber);

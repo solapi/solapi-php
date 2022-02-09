@@ -9,13 +9,13 @@ $limit = 5;
 
 // Page 1
 $page1 = get_messages(array(
-  "limit" => $limit
+    "limit" => $limit
 ));
 print_r($page1);
 
 // Page 2
 $page2 = get_messages(array(
-  "limit" => $limit, 
-  "startKey" => $page1->nextKey
+    "limit" => $limit,
+    "startKey" => $page1->nextKey
 ));
 print_r($page2);
