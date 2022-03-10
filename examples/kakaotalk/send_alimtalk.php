@@ -12,7 +12,7 @@ $messages = array(
         "kakaoOptions" => array(
             "pfId" => "KA01PF200323182344986oTFz9CIabcx",
             "templateId" => "KA01TP200323182345741y9yF20aabcx",
-            "variables" => array() // 반드시 빈 array로 입력
+            "variables" => new stdClass()
         )
     ),
     // 변수가 있는 경우
