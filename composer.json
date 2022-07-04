@@ -1,0 +1,34 @@
+{
+  "name": "solapi/solapi-php",
+  "description": "SOLAPI SDK for PHP",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Nurigo\\Solapi\\": "src/"
+    }
+  },
+  "keywords": [
+    "solapi",
+    "nurigo",
+    "sms",
+    "sdk",
+    "alimtalk",
+    "friendtalk",
+    "mms",
+    "lms"
+  ],
+  "authors": [
+    {
+      "name": "Nurigo CX Team",
+      "email": "contact@nurigo.net"
+    }
+  ],
+  "minimum-stability": "stable",
+  "homepage": "https://solapi.com",
+  "require": {
+    "php": ">=7.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  }
+}

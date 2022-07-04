@@ -6,3 +6,8 @@ out/
 .idea/
 config.php
 *.real.php
+
+
+# Composer gitignore
+composer.phar
+/vendor/
