@@ -1,6 +1,6 @@
 <?php
 
-namespace Nurigo\Libraries;
+namespace Nurigo\Solapi\Libraries;
 
 use Exception;
 
