@@ -4,7 +4,7 @@ namespace Nurigo\Solapi\Exceptions;
 
 use Exception;
 
-class SolapiCurlException extends Exception
+class CurlException extends Exception
 {
 
 }

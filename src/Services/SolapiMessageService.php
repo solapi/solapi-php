@@ -4,10 +4,12 @@ namespace Nurigo\Solapi\Services;
 
 use DateTime;
 use Exception;
-use Nurigo\Solapi\Exceptions\SolapiCurlException;
+use Nurigo\Solapi\Exceptions\CurlException;
+use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
 use Nurigo\Solapi\Models\Request\SendRequest;
+use stdClass;
 
 class SolapiMessageService
 {
@@ -25,15 +27,25 @@ class SolapiMessageService
      * 메시지 발송
      * @param Message|Message[] $messages
      * @param DateTime|null $scheduledDateTime
-     * @throws Exception|SolapiCurlException
-     * @return mixed
+     * @return stdClass
+     * @throws Exception|CurlException|MessageNotReceivedException
      */
-    public function send($messages, DateTime $scheduledDateTime = null)
+    public function send($messages, DateTime $scheduledDateTime = null): stdClass
     {
         if (!is_array($messages)) {
             $messages = array($messages);
         }
         $requestParameter = new SendRequest($messages, $scheduledDateTime);
-        return $this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter);
+        $response = $this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter);
+
+        $count = $response->groupInfo->count;
+        if (
+            (is_array($response->failedMessageList) && count($response->failedMessageList)) &&
+            ((int)$count->total === (int)$count->registeredFailed)
+        ) {
+            throw new MessageNotReceivedException($response->failedMessageList);
+        }
+
+        return $response;
     }
 }

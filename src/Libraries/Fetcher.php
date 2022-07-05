@@ -3,7 +3,7 @@
 namespace Nurigo\Solapi\Libraries;
 
 use Exception;
-use Nurigo\Solapi\Exceptions\SolapiCurlException;
+use Nurigo\Solapi\Exceptions\CurlException;
 
 class Fetcher
 {
@@ -37,7 +37,7 @@ class Fetcher
      * @param string $uri
      * @param mixed $data
      * @return mixed
-     * @throws Exception|SolapiCurlException CURL 관련된 Exception
+     * @throws Exception|CurlException CURL 관련된 Exception
      */
     public function request(string $method, string $uri, $data = false)
     {
@@ -64,7 +64,7 @@ class Fetcher
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSLVERSION, 3);
         if (curl_error($curl)) {
-            throw new SolapiCurlException(curl_error($curl));
+            throw new CurlException(curl_error($curl));
         }
         $result = curl_exec($curl);
         curl_close($curl);
