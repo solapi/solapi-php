@@ -1,16 +1,41 @@
 <?php
 
-namespace Nurigo\Solapi\Models\kakao;
+namespace Nurigo\Solapi\Models\Kakao;
+
+use stdClass;
 
 class KakaoOption
 {
+    /**
+     * @var string 카카오 채널 ID
+     */
     public $pfId;
+
+    /**
+     * @var string 카카오 알림톡 템플릿 ID
+     */
     public $templateId;
-    public $variables = null;
+
+    /**
+     * @var stdClass|null 치환문구 처리변수
+     */
+    public $variables;
+
+    /**
+     * @var bool 대체 발송 비활성화 옵션
+     * true일 경우에만 대체 발송이 비활성화 됩니다.
+     */
     public $disableSms = false;
+
+    /**
+     * @var bool
+     */
     public $adFlag = false;
+
+    /**
+     * @var array 메시지 버튼 목록
+     */
     public $buttons = array();
-    public $imageId;
 
     /**
      * @return string
@@ -120,21 +145,9 @@ class KakaoOption
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getImageId(): string
+    public function __construct()
     {
-        return $this->imageId;
-    }
-
-    /**
-     * @param string $imageId
-     * @return KakaoOption
-     */
-    public function setImageId(string $imageId): KakaoOption
-    {
-        $this->imageId = $imageId;
-        return $this;
+        $this->variables = new stdClass();
+        unset($this->buttons);
     }
 }

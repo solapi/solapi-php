@@ -2,27 +2,34 @@
 
 namespace Nurigo\Solapi\Models;
 
-use Nurigo\Solapi\Models\kakao\KakaoOption;
+use Nurigo\Solapi\Models\Kakao\KakaoOption;
 
+// TODO: Property 설명 정의해야 함
 class Message
 {
+    /**
+     * @var string 수신번호
+     */
     public $to;
+
+    /**
+     * @var string 발신번호
+     */
     public $from;
+
+    /**
+     * @var string 메시지 내용(SMS, LMS, MMS, CTA, CTI 전용)
+     */
     public $text;
-    public $groupId;
-    public $messageId;
+
+    /**
+     * @var string 스토리지 내 이미지 ID
+     */
     public $imageId;
-    public $type;
     public $subject;
-    public $autoTypeDetect = true;
     public $country = "82";
 
     public $kakaoOptions;
-
-    public $logs = array();
-
-    public $dateCreated;
-    public $dateUpdated;
 
     /**
      * @return string
@@ -222,57 +229,11 @@ class Message
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getLogs(): array
+    public function __construct()
     {
-        return $this->logs;
-    }
-
-    /**
-     * @param array $logs
-     * @return Message
-     */
-    public function setLogs(array $logs): Message
-    {
-        $this->logs = $logs;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDateCreated(): string
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param string $dateCreated
-     * @return Message
-     */
-    public function setDateCreated(string $dateCreated): Message
-    {
-        $this->dateCreated = $dateCreated;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDateUpdated(): string
-    {
-        return $this->dateUpdated;
-    }
-
-    /**
-     * @param string $dateUpdated
-     * @return Message
-     */
-    public function setDateUpdated(string $dateUpdated): Message
-    {
-        $this->dateUpdated = $dateUpdated;
-        return $this;
+        unset($this->text);
+        unset($this->kakaoOptions);
+        unset($this->subject);
+        unset($this->imageId);
     }
 }
