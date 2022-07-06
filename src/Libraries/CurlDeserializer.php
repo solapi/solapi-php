@@ -10,15 +10,16 @@ trait CurlDeserializer
     static function deserialize(stdClass $object): self
     {
         $deserializedClass = new self();
-        $reflectionObject = new ReflectionObject($object);
-        $reflectionProperties = $reflectionObject->getProperties();
-        foreach ($reflectionProperties as $reflectionProperty) {
-            $name = $reflectionProperty->getName();
-            if (property_exists(self::class, $name)) {
+        $reflectedObject = new ReflectionObject($object);
+        $properties = $reflectedObject->getProperties();
+        foreach ($properties as $property) {
+            $name = $property->getName();
+            if (gettype($deserializedClass->{$name}) == "object") {
+                self::deserialize($deserializedClass->{$name});
+            } else {
                 $deserializedClass->{$name} = $object->$name;
             }
         }
-        unset($object);
         return $deserializedClass;
     }
 }
