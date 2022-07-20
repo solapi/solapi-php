@@ -5,6 +5,9 @@ namespace Nurigo\Solapi\Libraries;
 use Exception;
 use Nurigo\Solapi\Exceptions\CurlException;
 
+/**
+ * @template T, R
+ */
 class Fetcher
 {
     private static $singleton;
@@ -36,7 +39,6 @@ class Fetcher
      * @param string $method
      * @param string $uri
      * @param mixed $data
-     * @return mixed
      * @throws Exception|CurlException CURL 관련된 Exception
      */
     public function request(string $method, string $uri, $data = false)
@@ -68,6 +70,7 @@ class Fetcher
         }
         $result = curl_exec($curl);
         curl_close($curl);
+
         return json_decode($result);
     }
 }

@@ -9,7 +9,7 @@ use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
 use Nurigo\Solapi\Models\Request\SendRequest;
-use stdClass;
+use Nurigo\Solapi\Models\Response\SendResponse;
 
 class SolapiMessageService
 {
@@ -27,25 +27,31 @@ class SolapiMessageService
      * 메시지 발송
      * @param Message|Message[] $messages
      * @param DateTime|null $scheduledDateTime
-     * @return stdClass
+     * @return SendResponse
      * @throws Exception|CurlException|MessageNotReceivedException
      */
-    public function send($messages, DateTime $scheduledDateTime = null): stdClass
+    public function send($messages, DateTime $scheduledDateTime = null): SendResponse
     {
         if (!is_array($messages)) {
             $messages = array($messages);
         }
         $requestParameter = new SendRequest($messages, $scheduledDateTime);
-        $response = $this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter);
-
-        $count = $response->groupInfo->count;
+        $response = new SendResponse($this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter));
+        /*$count = $response->groupInfo->count;
+        print_r($count);
         if (
-            (is_array($response->failedMessageList) && count($response->failedMessageList)) &&
+            count((array) $response->failedMessageList) > 0 &&
             ((int)$count->total === (int)$count->registeredFailed)
         ) {
             throw new MessageNotReceivedException($response->failedMessageList);
-        }
+        }*/
 
         return $response;
+    }
+
+    public function uploadFile(string $filePath, $type = "MMS")
+    {
+        $fileContent = file_get_contents($filePath);
+        $encodedFile = base64_encode($fileContent);
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "solapi/solapi-php",
+  "name": "solapi/sdk",
   "description": "SOLAPI SDK for PHP",
   "version": "5.0.0",
   "type": "library",
