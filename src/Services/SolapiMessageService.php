@@ -36,12 +36,13 @@ class SolapiMessageService
             $messages = array($messages);
         }
         $requestParameter = new SendRequest($messages, $scheduledDateTime);
-        $response = new SendResponse($this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter));
+        $result = $this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter);
+        $response = new SendResponse($result);
+
         /*$count = $response->groupInfo->count;
-        print_r($count);
         if (
-            count((array) $response->failedMessageList) > 0 &&
-            ((int)$count->total === (int)$count->registeredFailed)
+            count($response->failedMessageList) > 0 &&
+            ($count->total === $count->registeredFailed)
         ) {
             throw new MessageNotReceivedException($response->failedMessageList);
         }*/

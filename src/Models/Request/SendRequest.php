@@ -3,7 +3,6 @@
 namespace Nurigo\Solapi\Models\Request;
 
 use DateTime;
-use Nurigo\Solapi\Libraries\SolapiSerializer;
 use Nurigo\Solapi\Models\Message;
 
 class SendRequest

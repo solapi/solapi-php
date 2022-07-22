@@ -2,25 +2,27 @@
 
 namespace Nurigo\Solapi\Models\Response;
 
+use stdClass;
+
 class GroupMessageResponse
 {
     /**
-     * @var object
+     * @var GroupCount
      */
     public $count;
 
     /**
-     * @var object
+     * @var GroupCountForCharge
      */
     public $countForCharge;
 
     /**
-     * @var object
+     * @var CommonCashResponse
      */
     public $balance;
 
     /**
-     * @var object
+     * @var CommonCashResponse
      */
     public $point;
 
