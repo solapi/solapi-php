@@ -4,6 +4,7 @@ namespace Nurigo\Solapi\Services;
 
 use DateTime;
 use Exception;
+use Nurigo\Solapi\Exceptions\BaseException;
 use Nurigo\Solapi\Exceptions\CurlException;
 use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
@@ -55,9 +56,10 @@ class SolapiMessageService
     /**
      * @param string $filePath 파일 경로
      * @param string $type 파일 유형(MMS, RCS, DOCUMENT, KAKAO)
-     * @return string|null
+     * @throws Exception|CurlException
+     * @return string
      */
-    public function uploadFile(string $filePath, string $type = "MMS", $name = null, $link = null)
+    public function uploadFile(string $filePath, string $type = "MMS", $name = null, $link = null): string
     {
         $fileContent = file_get_contents($filePath);
         $encodedFile = base64_encode($fileContent);
@@ -74,15 +76,11 @@ class SolapiMessageService
             $parameter->setLink($link);
         }
 
-        try {
-            $result = $this->fetcherInstance->request("POST", "/storage/v1/files", $parameter);
-            if (isset($result->errorCode)) {
-                throw new Exception();
-            }
-            $response = new UploadFileResponse($result);
-            return $response->fileId;
-        } catch (Exception $exception) {
-            return null;
+        $result = $this->fetcherInstance->request("POST", "/storage/v1/files", $parameter);
+        if (isset($result->errorCode)) {
+            throw new BaseException($result->errorMessage, $result->errorCode);
         }
+        $response = new UploadFileResponse($result);
+        return $response->fileId;
     }
 }

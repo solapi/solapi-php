@@ -17,8 +17,8 @@ class MessageNotReceivedException extends Exception
      */
     public function __construct($failedMessageList)
     {
-        $this->failedMessageList = $failedMessageList;
         parent::__construct("메시지 접수에 실패했습니다.");
+        $this->failedMessageList = $failedMessageList;
     }
 
     /**
