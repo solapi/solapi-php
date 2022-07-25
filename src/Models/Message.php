@@ -4,7 +4,6 @@ namespace Nurigo\Solapi\Models;
 
 use Nurigo\Solapi\Models\Kakao\KakaoOption;
 
-// TODO: Property 설명 정의해야 함
 class Message
 {
     /**
@@ -26,9 +25,20 @@ class Message
      * @var string 스토리지 내 이미지 ID
      */
     public $imageId;
+
+    /**
+     * @var string 문자 제목(LMS, MMS 전용 옵션)
+     */
     public $subject;
+
+    /**
+     * @var string 국가번호
+     */
     public $country = "82";
 
+    /**
+     * @var KakaoOption
+     */
     public $kakaoOptions;
 
     /**

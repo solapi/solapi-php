@@ -10,6 +10,9 @@ use Nurigo\Solapi\Exceptions\CurlException;
  */
 class Fetcher
 {
+    /**
+     * @var Fetcher
+     */
     private static $singleton;
 
     protected $apiKey = '';
@@ -17,12 +20,21 @@ class Fetcher
 
     const API_URL = "https://api.solapi.com";
 
-    public static function getInstance(string $apiKey, string $apiSecretKey)
+    /**
+     * @param string $apiKey
+     * @param string $apiSecretKey
+     * @return Fetcher
+     */
+    public static function getInstance(string $apiKey, string $apiSecretKey): Fetcher
     {
         if (!isset(Fetcher::$singleton)) Fetcher::$singleton = new Fetcher($apiKey, $apiSecretKey);
         return Fetcher::$singleton;
     }
 
+    /**
+     * @param string $apiKey
+     * @param string $apiSecretKey
+     */
     public function __construct(string $apiKey, string $apiSecretKey)
     {
         $this->apiKey = $apiKey;

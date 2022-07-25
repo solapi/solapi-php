@@ -9,7 +9,9 @@ use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
 use Nurigo\Solapi\Models\Request\SendRequest;
+use Nurigo\Solapi\Models\Request\UploadFileRequest;
 use Nurigo\Solapi\Models\Response\SendResponse;
+use Nurigo\Solapi\Models\Response\UploadFileResponse;
 
 class SolapiMessageService
 {
@@ -39,20 +41,48 @@ class SolapiMessageService
         $result = $this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter);
         $response = new SendResponse($result);
 
-        /*$count = $response->groupInfo->count;
+        $count = $response->groupInfo->count;
         if (
             count($response->failedMessageList) > 0 &&
             ($count->total === $count->registeredFailed)
         ) {
             throw new MessageNotReceivedException($response->failedMessageList);
-        }*/
+        }
 
         return $response;
     }
 
-    public function uploadFile(string $filePath, $type = "MMS")
+    /**
+     * @param string $filePath 파일 경로
+     * @param string $type 파일 유형(MMS, RCS, DOCUMENT, KAKAO)
+     * @return string|null
+     */
+    public function uploadFile(string $filePath, string $type = "MMS", $name = null, $link = null)
     {
         $fileContent = file_get_contents($filePath);
         $encodedFile = base64_encode($fileContent);
+
+        $parameter = new UploadFileRequest();
+        $parameter->setFile($encodedFile)
+            ->setType($type);
+
+        if ($name !== null && $name !== '') {
+            $parameter->setName($name);
+        }
+
+        if ($link !== null && $link !== '') {
+            $parameter->setLink($link);
+        }
+
+        try {
+            $result = $this->fetcherInstance->request("POST", "/storage/v1/files", $parameter);
+            if (isset($result->errorCode)) {
+                throw new Exception();
+            }
+            $response = new UploadFileResponse($result);
+            return $response->fileId;
+        } catch (Exception $exception) {
+            return null;
+        }
     }
 }

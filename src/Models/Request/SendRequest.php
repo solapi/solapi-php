@@ -32,7 +32,7 @@ class SendRequest
      * @param DateTime|null $scheduledDate
      * @param bool $allowDuplicates
      */
-    public function __construct(array $messages, DateTime $scheduledDate = null, bool $allowDuplicates = false)
+    public function __construct($messages, $scheduledDate = null, $allowDuplicates = false)
     {
         $this->messages = $messages;
         if ($scheduledDate != null) {

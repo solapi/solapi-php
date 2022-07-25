@@ -12,7 +12,7 @@ class SendResponse implements JsonSerializable
     public $groupInfo;
 
     /**
-     * @var array
+     * @var FailedMessage[]
      */
     public $failedMessageList;
 
@@ -25,6 +25,9 @@ class SendResponse implements JsonSerializable
         $this->failedMessageList = $value->failedMessageList;
     }
 
+    /**
+     * @return array
+     */
     public function jsonSerialize(): array
     {
         return [
