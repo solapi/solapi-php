@@ -42,6 +42,26 @@ class Message
     public $kakaoOptions;
 
     /**
+     * @var string
+     */
+    public $messageId;
+
+    /**
+     * @var string
+     */
+    public $groupId;
+
+    /**
+     * @var string
+     */
+    public $type;
+
+    /**
+     * @var bool
+     */
+    public $autoTypeDetect;
+
+    /**
      * @return string
      */
     public function getTo(): string

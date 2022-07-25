@@ -35,7 +35,7 @@ class KakaoOption
     /**
      * @var array 메시지 버튼 목록
      */
-    public $buttons = array();
+    public $buttons;
 
     /**
      * @return string

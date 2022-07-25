@@ -9,8 +9,10 @@ use Nurigo\Solapi\Exceptions\CurlException;
 use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
+use Nurigo\Solapi\Models\Request\GetMessagesRequest;
 use Nurigo\Solapi\Models\Request\SendRequest;
 use Nurigo\Solapi\Models\Request\UploadFileRequest;
+use Nurigo\Solapi\Models\Response\GetMessagesResponse;
 use Nurigo\Solapi\Models\Response\SendResponse;
 use Nurigo\Solapi\Models\Response\UploadFileResponse;
 
@@ -56,10 +58,13 @@ class SolapiMessageService
     /**
      * @param string $filePath 파일 경로
      * @param string $type 파일 유형(MMS, RCS, DOCUMENT, KAKAO)
-     * @throws Exception|CurlException
-     * @return string
+     * @param string|null $name 파일 이름
+     * @param string|null $link 이미지 링크(이미지 친구톡 전용)
+     * @return string 업로드 된 파일의 ID
+     * @throws BaseException
+     * @throws CurlException
      */
-    public function uploadFile(string $filePath, string $type = "MMS", $name = null, $link = null): string
+    public function uploadFile(string $filePath, string $type = "MMS", string $name = null, string $link = null): string
     {
         $fileContent = file_get_contents($filePath);
         $encodedFile = base64_encode($fileContent);
@@ -82,5 +87,20 @@ class SolapiMessageService
         }
         $response = new UploadFileResponse($result);
         return $response->fileId;
+    }
+
+
+    /**
+     * @param GetMessagesRequest|null $parameter
+     * @return GetMessagesResponse|null
+     */
+    public function getMessages(GetMessagesRequest $parameter = null)
+    {
+        try {
+            $result = $this->fetcherInstance->request("GET", "/messages/v4/list", $parameter);
+            return new GetMessagesResponse($result);
+        } catch (Exception $exception) {
+            return null;
+        }
     }
 }
