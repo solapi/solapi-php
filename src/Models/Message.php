@@ -4,7 +4,7 @@ namespace Nurigo\Solapi\Models;
 
 use Nurigo\Solapi\Models\Kakao\KakaoOption;
 
-class Message
+class Message extends BaseMessage
 {
     /**
      * @var string 수신번호

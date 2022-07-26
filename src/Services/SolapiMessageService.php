@@ -9,9 +9,11 @@ use Nurigo\Solapi\Exceptions\CurlException;
 use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
+use Nurigo\Solapi\Models\Request\GetGroupsRequest;
 use Nurigo\Solapi\Models\Request\GetMessagesRequest;
 use Nurigo\Solapi\Models\Request\SendRequest;
 use Nurigo\Solapi\Models\Request\UploadFileRequest;
+use Nurigo\Solapi\Models\Response\GetGroupsResponse;
 use Nurigo\Solapi\Models\Response\GetMessagesResponse;
 use Nurigo\Solapi\Models\Response\SendResponse;
 use Nurigo\Solapi\Models\Response\UploadFileResponse;
@@ -100,6 +102,21 @@ class SolapiMessageService
             $result = $this->fetcherInstance->request("GET", "/messages/v4/list", $parameter);
             return new GetMessagesResponse($result);
         } catch (Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @param GetGroupsRequest|null $parameter
+     * @return GetGroupsResponse|null
+     */
+    public function getGroups(GetGroupsRequest $parameter = null)
+    {
+        try {
+            $result = $this->fetcherInstance->request("GET", "/messages/v4/groups", $parameter);
+            return new GetGroupsResponse($result);
+        } catch (Exception $exception) {
+            print_r($exception->getMessage());
             return null;
         }
     }
