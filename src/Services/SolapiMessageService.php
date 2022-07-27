@@ -15,6 +15,7 @@ use Nurigo\Solapi\Models\Request\SendRequest;
 use Nurigo\Solapi\Models\Request\UploadFileRequest;
 use Nurigo\Solapi\Models\Response\GetGroupsResponse;
 use Nurigo\Solapi\Models\Response\GetMessagesResponse;
+use Nurigo\Solapi\Models\Response\GroupMessageResponse;
 use Nurigo\Solapi\Models\Response\SendResponse;
 use Nurigo\Solapi\Models\Response\UploadFileResponse;
 
@@ -116,7 +117,19 @@ class SolapiMessageService
             $result = $this->fetcherInstance->request("GET", "/messages/v4/groups", $parameter);
             return new GetGroupsResponse($result);
         } catch (Exception $exception) {
-            print_r($exception->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * @param string $groupId
+     * @return GroupMessageResponse|null
+     */
+    public function getGroup(string $groupId)
+    {
+        try {
+            return $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId");
+        } catch (Exception $exception) {
             return null;
         }
     }
