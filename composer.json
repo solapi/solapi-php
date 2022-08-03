@@ -1,0 +1,46 @@
+{
+  "name": "solapi/sdk",
+  "description": "SOLAPI SDK for PHP",
+  "version": "5.0.0",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Nurigo\\Solapi\\": "src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/solapi/solapi-php"
+    }
+  ],
+  "keywords": [
+    "solapi",
+    "nurigo",
+    "sms",
+    "sdk",
+    "alimtalk",
+    "friendtalk",
+    "mms",
+    "lms"
+  ],
+  "authors": [
+    {
+      "name": "Nurigo CX Team",
+      "email": "contact@nurigo.net"
+    },
+    {
+      "name": "Subin Lee",
+      "email": "chandar.sblee@gmail.com",
+      "homepage": "https://subux.dev"
+    }
+  ],
+  "minimum-stability": "stable",
+  "homepage": "https://solapi.com",
+  "require": {
+    "php": ">=7.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  }
+}
