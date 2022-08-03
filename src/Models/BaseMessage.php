@@ -2,7 +2,7 @@
 
 namespace Nurigo\Solapi\Models;
 
-use Nurigo\Solapi\Models\Kakao\KakaoOption;
+use Nurigo\Solapi\Models\Kakao\BaseKakaoOption;
 
 class BaseMessage
 {
@@ -37,7 +37,7 @@ class BaseMessage
     public $country = "82";
 
     /**
-     * @var KakaoOption
+     * @var BaseKakaoOption
      */
     public $kakaoOptions;
 

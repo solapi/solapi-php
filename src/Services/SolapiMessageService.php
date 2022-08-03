@@ -9,12 +9,16 @@ use Nurigo\Solapi\Exceptions\CurlException;
 use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
+use Nurigo\Solapi\Models\Request\GetGroupMessagesRequest;
 use Nurigo\Solapi\Models\Request\GetGroupsRequest;
 use Nurigo\Solapi\Models\Request\GetMessagesRequest;
+use Nurigo\Solapi\Models\Request\GetStatisticsRequest;
 use Nurigo\Solapi\Models\Request\SendRequest;
 use Nurigo\Solapi\Models\Request\UploadFileRequest;
+use Nurigo\Solapi\Models\Response\GetGroupMessagesResponse;
 use Nurigo\Solapi\Models\Response\GetGroupsResponse;
 use Nurigo\Solapi\Models\Response\GetMessagesResponse;
+use Nurigo\Solapi\Models\Response\GetStatisticsResponse;
 use Nurigo\Solapi\Models\Response\GroupMessageResponse;
 use Nurigo\Solapi\Models\Response\SendResponse;
 use Nurigo\Solapi\Models\Response\UploadFileResponse;
@@ -129,6 +133,33 @@ class SolapiMessageService
     {
         try {
             return $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId");
+        } catch (Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $groupId
+     * @param GetGroupMessagesRequest|null $parameter
+     * @return GetGroupMessagesResponse|null
+     */
+    public function getGroupMessages(string $groupId, GetGroupMessagesRequest $parameter = null)
+    {
+        try {
+            return $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId/messages", $parameter);
+        } catch (Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @param GetStatisticsRequest|null $parameter
+     * @return GetStatisticsResponse|null
+     */
+    public function getStatistics(GetStatisticsRequest $parameter = null)
+    {
+        try {
+            return $this->fetcherInstance->request("GET", "/messages/v4/statistics", $parameter);
         } catch (Exception $exception) {
             return null;
         }

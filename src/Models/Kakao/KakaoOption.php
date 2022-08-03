@@ -4,7 +4,7 @@ namespace Nurigo\Solapi\Models\Kakao;
 
 use stdClass;
 
-class KakaoOption
+class KakaoOption extends BaseKakaoOption
 {
     /**
      * @var string 카카오 채널 ID
