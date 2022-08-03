@@ -9,6 +9,12 @@
       "Nurigo\\Solapi\\": "src/"
     }
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/solapi/solapi-php"
+    }
+  ],
   "keywords": [
     "solapi",
     "nurigo",
@@ -23,6 +29,11 @@
     {
       "name": "Nurigo CX Team",
       "email": "contact@nurigo.net"
+    },
+    {
+      "name": "Subin Lee",
+      "email": "chandar.sblee@gmail.com",
+      "homepage": "https://subux.dev"
     }
   ],
   "minimum-stability": "stable",

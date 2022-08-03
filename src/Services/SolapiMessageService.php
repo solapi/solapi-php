@@ -15,6 +15,7 @@ use Nurigo\Solapi\Models\Request\GetMessagesRequest;
 use Nurigo\Solapi\Models\Request\GetStatisticsRequest;
 use Nurigo\Solapi\Models\Request\SendRequest;
 use Nurigo\Solapi\Models\Request\UploadFileRequest;
+use Nurigo\Solapi\Models\Response\GetBalanceResponse;
 use Nurigo\Solapi\Models\Response\GetGroupMessagesResponse;
 use Nurigo\Solapi\Models\Response\GetGroupsResponse;
 use Nurigo\Solapi\Models\Response\GetMessagesResponse;
@@ -36,7 +37,7 @@ class SolapiMessageService
     }
 
     /**
-     * 메시지 발송
+     * 메시지(문자, 알림톡 등) 발송 함수
      * @param Message|Message[] $messages
      * @param DateTime|null $scheduledDateTime
      * @return SendResponse
@@ -63,6 +64,7 @@ class SolapiMessageService
     }
 
     /**
+     * MMS 용 이미지 또는 친구톡 이미지 업로드를 위한 함수
      * @param string $filePath 파일 경로
      * @param string $type 파일 유형(MMS, RCS, DOCUMENT, KAKAO)
      * @param string|null $name 파일 이름
@@ -98,6 +100,7 @@ class SolapiMessageService
 
 
     /**
+     * 메시지 목록을 조회하는 함수
      * @param GetMessagesRequest|null $parameter
      * @return GetMessagesResponse|null
      */
@@ -112,6 +115,7 @@ class SolapiMessageService
     }
 
     /**
+     * 그룹 목록을 조회하는 함수
      * @param GetGroupsRequest|null $parameter
      * @return GetGroupsResponse|null
      */
@@ -126,6 +130,7 @@ class SolapiMessageService
     }
 
     /**
+     * 그룹 단일 건을 조회하는 함수
      * @param string $groupId
      * @return GroupMessageResponse|null
      */
@@ -139,6 +144,7 @@ class SolapiMessageService
     }
 
     /**
+     * 특정 그룹 내 메시지 목록을 조회하는 함수
      * @param string $groupId
      * @param GetGroupMessagesRequest|null $parameter
      * @return GetGroupMessagesResponse|null
@@ -153,6 +159,7 @@ class SolapiMessageService
     }
 
     /**
+     * 통계를 조회하는 함수
      * @param GetStatisticsRequest|null $parameter
      * @return GetStatisticsResponse|null
      */
@@ -160,6 +167,19 @@ class SolapiMessageService
     {
         try {
             return $this->fetcherInstance->request("GET", "/messages/v4/statistics", $parameter);
+        } catch (Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * 잔액(충전금액, 포인트)을 조회하는 함수
+     * @return GetBalanceResponse|null
+     */
+    public function getBalance()
+    {
+        try {
+            return $this->fetcherInstance->request("GET", "/cash/v1/balance");
         } catch (Exception $exception) {
             return null;
         }
