@@ -265,5 +265,9 @@ class Message extends BaseMessage
         unset($this->kakaoOptions);
         unset($this->subject);
         unset($this->imageId);
+        unset($this->autoTypeDetect);
+        unset($this->groupId);
+        unset($this->messageId);
+        unset($this->type);
     }
 }
