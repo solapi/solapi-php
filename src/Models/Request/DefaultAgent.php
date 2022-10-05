@@ -16,7 +16,7 @@ class DefaultAgent
 
     public function __construct()
     {
-        $this->sdkVersion = 'php/5.0.0';
+        $this->sdkVersion = 'php/5.0.2';
         $this->osPlatform = PHP_OS . " | " . phpversion();
     }
 }
