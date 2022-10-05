@@ -3,7 +3,10 @@
 namespace Nurigo\Solapi\Libraries;
 
 use Exception;
+use Nurigo\Solapi\Exceptions\BaseException;
 use Nurigo\Solapi\Exceptions\CurlException;
+use Nurigo\Solapi\Exceptions\UnknownException;
+use Nurigo\Solapi\Models\Response\ErrorResponse;
 
 /**
  * @template T, R
@@ -76,13 +79,22 @@ class Fetcher
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSLVERSION, 3);
-        if (curl_error($curl)) {
+        $result = curl_exec($curl);
+        $jsonResult = json_decode($result);
+
+        if (curl_errno($curl)) {
             throw new CurlException(curl_error($curl));
         }
-        $result = curl_exec($curl);
+
+        $httpStatusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if ($httpStatusCode >= 400 && $httpStatusCode <= 500) {
+            $errorResponse = new ErrorResponse($jsonResult);
+            throw new BaseException($errorResponse->errorMessage, $errorResponse->errorCode);
+        } else if ($httpStatusCode != 200) {
+            throw new UnknownException("Unknown Http Error Occurred", $result);
+        }
         curl_close($curl);
 
-        return json_decode($result);
+        return $jsonResult;
     }
 }
