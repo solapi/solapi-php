@@ -7,6 +7,7 @@ use Exception;
 use Nurigo\Solapi\Exceptions\BaseException;
 use Nurigo\Solapi\Exceptions\CurlException;
 use Nurigo\Solapi\Exceptions\MessageNotReceivedException;
+use Nurigo\Solapi\Exceptions\UnknownException;
 use Nurigo\Solapi\Libraries\Fetcher;
 use Nurigo\Solapi\Models\Message;
 use Nurigo\Solapi\Models\Request\GetGroupMessagesRequest;
@@ -41,7 +42,7 @@ class SolapiMessageService
      * @param Message|Message[] $messages
      * @param DateTime|null $scheduledDateTime
      * @return SendResponse
-     * @throws Exception|CurlException|MessageNotReceivedException
+     * @throws Exception|CurlException|MessageNotReceivedException|BaseException|UnknownException
      */
     public function send($messages, DateTime $scheduledDateTime = null): SendResponse
     {

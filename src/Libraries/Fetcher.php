@@ -54,7 +54,7 @@ class Fetcher
      * @param string $method
      * @param string $uri
      * @param mixed $data
-     * @throws Exception|CurlException CURL 관련된 Exception
+     * @throws Exception|CurlException|BaseException|UnknownException CURL 관련된 Exception
      */
     public function request(string $method, string $uri, $data = false)
     {
