@@ -258,16 +258,4 @@ class Message extends BaseMessage
         $this->kakaoOptions = $kakaoOptions;
         return $this;
     }
-
-    public function __construct()
-    {
-        unset($this->text);
-        unset($this->kakaoOptions);
-        unset($this->subject);
-        unset($this->imageId);
-        unset($this->autoTypeDetect);
-        unset($this->groupId);
-        unset($this->messageId);
-        unset($this->type);
-    }
 }
