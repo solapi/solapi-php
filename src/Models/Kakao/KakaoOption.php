@@ -148,6 +148,5 @@ class KakaoOption extends BaseKakaoOption
     public function __construct()
     {
         $this->variables = new stdClass();
-        unset($this->buttons);
     }
 }

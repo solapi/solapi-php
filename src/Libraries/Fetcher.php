@@ -67,10 +67,13 @@ class Fetcher
             case "POST":
             case "PUT":
             case "DELETE":
-                if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                if ($data) {
+                    $data = NullEliminator::array_null_eliminate((array)$data);
+                    $data = json_encode($data);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                }
                 break;
             case "GET":
-            default:
                 if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
                 break;
         }
