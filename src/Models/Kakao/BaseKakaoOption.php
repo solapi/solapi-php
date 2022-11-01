@@ -29,4 +29,9 @@ class BaseKakaoOption
      * @var array 메시지 버튼 목록
      */
     public $buttons;
+
+    /**
+     * @var string 이미지 아이디(스토리지에 업로드 된 이미지 ID)
+     */
+    public $imageId;
 }
