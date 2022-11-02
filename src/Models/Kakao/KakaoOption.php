@@ -38,6 +38,27 @@ class KakaoOption extends BaseKakaoOption
     public $buttons;
 
     /**
+     * @var string 이미지 아이디(스토리지에 업로드 된 이미지 ID)
+     */
+    public $imageId;
+
+    /**
+     * @return string
+     */
+    public function getImageId(): string
+    {
+        return $this->imageId;
+    }
+
+    /**
+     * @param string $imageId
+     */
+    public function setImageId(string $imageId)
+    {
+        $this->imageId = $imageId;
+    }
+
+    /**
      * @return string
      */
     public function getPfId(): string
