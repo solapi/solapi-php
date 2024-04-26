@@ -1,7 +1,7 @@
 {
   "name": "solapi/sdk",
   "description": "SOLAPI SDK for PHP",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "type": "library",
   "license": "MIT",
   "autoload": {
