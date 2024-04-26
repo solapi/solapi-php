@@ -2,8 +2,6 @@
 
 namespace Nurigo\Solapi\Models\Kakao;
 
-use stdClass;
-
 class KakaoOption extends BaseKakaoOption
 {
     /**
@@ -168,6 +166,6 @@ class KakaoOption extends BaseKakaoOption
 
     public function __construct()
     {
-        $this->variables = new stdClass();
+        // do nothing
     }
 }
