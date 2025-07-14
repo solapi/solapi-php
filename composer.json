@@ -1,7 +1,7 @@
 {
   "name": "solapi/sdk",
   "description": "SOLAPI SDK for PHP",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "type": "library",
   "license": "MIT",
   "autoload": {
@@ -17,13 +17,14 @@
   ],
   "keywords": [
     "solapi",
-    "nurigo",
-    "sms",
+    "korea sms",
+    "korea mms",
+    "korea lms",
     "sdk",
-    "alimtalk",
-    "friendtalk",
-    "mms",
-    "lms"
+    "kakao alimtalk",
+    "kakao brand message",
+    "korea voice message",
+    "korea fax"
   ],
   "authors": [
     {
@@ -39,7 +40,7 @@
   "minimum-stability": "stable",
   "homepage": "https://solapi.com",
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.1",
     "ext-curl": "*",
     "ext-json": "*"
   }

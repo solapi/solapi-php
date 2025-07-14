@@ -2,6 +2,8 @@
 
 namespace Nurigo\Solapi\Models\Kakao;
 
+use stdClass;
+
 class KakaoOption extends BaseKakaoOption
 {
     /**
@@ -39,6 +41,11 @@ class KakaoOption extends BaseKakaoOption
      * @var string 이미지 아이디(스토리지에 업로드 된 이미지 ID)
      */
     public $imageId;
+
+    /**
+     * @var KakaoBms 카카오 브랜드 메시지 전용 옵션
+     */
+    public $bms;
 
     /**
      * @return string
@@ -93,9 +100,9 @@ class KakaoOption extends BaseKakaoOption
     }
 
     /**
-     * @return mixed
+     * @return stdClass|null
      */
-    public function getVariables()
+    public function getVariables(): ?stdClass
     {
         return $this->variables;
     }
@@ -164,8 +171,19 @@ class KakaoOption extends BaseKakaoOption
         return $this;
     }
 
-    public function __construct()
-    {
-        // do nothing
+    /**
+     * @return KakaoBms
+     */
+    public function getBms(): KakaoBms {
+        return $this->bms;
+    }
+
+    /**
+     * @param KakaoBms $bms
+     * @return $this
+     */
+    public function setBms(KakaoBms $bms): KakaoOption {
+        $this->bms = $bms;
+        return $this;
     }
 }

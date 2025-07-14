@@ -2,7 +2,9 @@
 
 namespace Nurigo\Solapi\Models;
 
+use Nurigo\Solapi\Models\Fax\FaxOption;
 use Nurigo\Solapi\Models\Kakao\KakaoOption;
+use Nurigo\Solapi\Models\Voice\VoiceOption;
 
 class Message extends BaseMessage
 {
@@ -60,6 +62,18 @@ class Message extends BaseMessage
      * @var bool
      */
     public $autoTypeDetect;
+
+    /**
+     * @var FaxOption 팩스 발송을 위한 프로퍼티
+     * @see https://developers.solapi.com/references/fax
+     */
+    public $faxOptions;
+
+    /**
+     * @var VoiceOption 음성 메시지 발송을 위한 프로퍼티
+     * @see https://developers.solapi.com/references/voice
+     */
+    public $voiceOptions;
 
     /**
      * @return string
@@ -131,6 +145,26 @@ class Message extends BaseMessage
     {
         $this->groupId = $groupId;
         return $this;
+    }
+
+    public function getFaxOptions(): FaxOption
+    {
+        return $this->faxOptions;
+    }
+
+    public function setFaxOptions(FaxOption $faxOptions)
+    {
+        $this->faxOptions = $faxOptions;
+    }
+
+    public function getVoiceOptions(): VoiceOption
+    {
+        return $this->voiceOptions;
+    }
+
+    public function setVoiceOptions(VoiceOption $voiceOptions)
+    {
+        $this->voiceOptions = $voiceOptions;
     }
 
     /**
