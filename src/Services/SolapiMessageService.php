@@ -44,7 +44,7 @@ class SolapiMessageService
      * @return SendResponse
      * @throws Exception|CurlException|MessageNotReceivedException|BaseException|UnknownException
      */
-    public function send($messages, DateTime $scheduledDateTime = null): SendResponse
+    public function send($messages, ?DateTime $scheduledDateTime = null): SendResponse
     {
         if (!is_array($messages)) {
             $messages = array($messages);
@@ -72,9 +72,9 @@ class SolapiMessageService
      * @param string|null $link 이미지 링크(이미지 친구톡 전용)
      * @return string 업로드 된 파일의 ID
      * @throws BaseException
-     * @throws CurlException
+     * @throws CurlException|UnknownException
      */
-    public function uploadFile(string $filePath, string $type = "MMS", string $name = null, string $link = null): string
+    public function uploadFile(string $filePath, string $type = "MMS", ?string $name = null, ?string $link = null): string
     {
         $fileContent = file_get_contents($filePath);
         $encodedFile = base64_encode($fileContent);
@@ -105,7 +105,7 @@ class SolapiMessageService
      * @param GetMessagesRequest|null $parameter
      * @return GetMessagesResponse|null
      */
-    public function getMessages(GetMessagesRequest $parameter = null)
+    public function getMessages(?GetMessagesRequest $parameter = null): ?GetMessagesResponse
     {
         try {
             $result = $this->fetcherInstance->request("GET", "/messages/v4/list", $parameter);
@@ -120,7 +120,7 @@ class SolapiMessageService
      * @param GetGroupsRequest|null $parameter
      * @return GetGroupsResponse|null
      */
-    public function getGroups(GetGroupsRequest $parameter = null)
+    public function getGroups(?GetGroupsRequest $parameter = null): ?GetGroupsResponse
     {
         try {
             $result = $this->fetcherInstance->request("GET", "/messages/v4/groups", $parameter);
@@ -135,7 +135,7 @@ class SolapiMessageService
      * @param string $groupId
      * @return GroupMessageResponse|null
      */
-    public function getGroup(string $groupId)
+    public function getGroup(string $groupId): ?GroupMessageResponse
     {
         try {
             return $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId");
@@ -150,7 +150,7 @@ class SolapiMessageService
      * @param GetGroupMessagesRequest|null $parameter
      * @return GetGroupMessagesResponse|null
      */
-    public function getGroupMessages(string $groupId, GetGroupMessagesRequest $parameter = null)
+    public function getGroupMessages(string $groupId, ?GetGroupMessagesRequest $parameter = null): ?GetGroupMessagesResponse
     {
         try {
             return $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId/messages", $parameter);
@@ -164,7 +164,7 @@ class SolapiMessageService
      * @param GetStatisticsRequest|null $parameter
      * @return GetStatisticsResponse|null
      */
-    public function getStatistics(GetStatisticsRequest $parameter = null)
+    public function getStatistics(?GetStatisticsRequest $parameter = null): ?GetStatisticsResponse
     {
         try {
             return $this->fetcherInstance->request("GET", "/messages/v4/statistics", $parameter);
@@ -177,7 +177,7 @@ class SolapiMessageService
      * 잔액(충전금액, 포인트)을 조회하는 함수
      * @return GetBalanceResponse|null
      */
-    public function getBalance()
+    public function getBalance(): ?GetBalanceResponse
     {
         try {
             return $this->fetcherInstance->request("GET", "/cash/v1/balance");
