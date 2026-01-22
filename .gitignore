@@ -12,3 +12,7 @@ debug/
 # Composer gitignore
 composer.phar
 /vendor/
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/

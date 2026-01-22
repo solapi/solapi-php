@@ -9,6 +9,11 @@
       "Nurigo\\Solapi\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Nurigo\\Solapi\\Tests\\": "tests/"
+    }
+  },
   "repositories": [
     {
       "type": "vcs",
@@ -45,5 +50,11 @@
     "psr/http-client": "^1.0",
     "psr/http-message": "^1.0 || ^2.0",
     "nyholm/psr7": "^1.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "scripts": {
+    "test": "phpunit"
   }
 }
