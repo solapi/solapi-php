@@ -3,45 +3,44 @@
 namespace Nurigo\Solapi\Libraries;
 
 use Exception;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Client\ClientExceptionInterface;
+use Nyholm\Psr7\Request;
+use Nyholm\Psr7\Uri;
 use Nurigo\Solapi\Exceptions\BaseException;
 use Nurigo\Solapi\Exceptions\CurlException;
 use Nurigo\Solapi\Exceptions\UnknownException;
 use Nurigo\Solapi\Models\Response\ErrorResponse;
 
-/**
- * @template T, R
- */
 class Fetcher
 {
-    /**
-     * @var Fetcher
-     */
     private static $singleton;
 
     protected $apiKey = '';
     protected $apiSecretKey = '';
+    protected $httpClient;
 
     const API_URL = "https://api.solapi.com";
+    const DEFAULT_TIMEOUT = 30.0;
+    const DEFAULT_CONNECT_TIMEOUT = 10.0;
 
-    /**
-     * @param string $apiKey
-     * @param string $apiSecretKey
-     * @return Fetcher
-     */
     public static function getInstance(string $apiKey, string $apiSecretKey): Fetcher
     {
-        if (!isset(Fetcher::$singleton)) Fetcher::$singleton = new Fetcher($apiKey, $apiSecretKey);
+        if (!isset(Fetcher::$singleton)) {
+            Fetcher::$singleton = new Fetcher($apiKey, $apiSecretKey);
+        }
         return Fetcher::$singleton;
     }
 
-    /**
-     * @param string $apiKey
-     * @param string $apiSecretKey
-     */
-    public function __construct(string $apiKey, string $apiSecretKey)
+    public function __construct(string $apiKey, string $apiSecretKey, ?ClientInterface $httpClient = null)
     {
         $this->apiKey = $apiKey;
         $this->apiSecretKey = $apiSecretKey;
+        $this->httpClient = $httpClient ?? new HttpClient([
+            'timeout' => self::DEFAULT_TIMEOUT,
+            'connect_timeout' => self::DEFAULT_CONNECT_TIMEOUT,
+            'verify' => true,
+        ]);
     }
 
     public function __destruct()
@@ -54,50 +53,57 @@ class Fetcher
      * @param string $method
      * @param string $uri
      * @param mixed $data
-     * @throws Exception|CurlException|BaseException|UnknownException CURL 관련된 Exception
+     * @return mixed
+     * @throws Exception|CurlException|BaseException|UnknownException
      */
     public function request(string $method, string $uri, $data = false)
     {
         $authHeaderInfo = Authenticator::getAuthorizationHeaderInfo($this->apiKey, $this->apiSecretKey);
+        $headerParts = explode(': ', $authHeaderInfo, 2);
+        $authHeaderValue = $headerParts[1] ?? $authHeaderInfo;
+
         $url = self::API_URL . $uri;
+        $body = '';
+        $headers = [
+            'Authorization' => $authHeaderValue,
+            'Content-Type' => 'application/json',
+        ];
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-        switch ($method) {
-            case "POST":
-            case "PUT":
-            case "DELETE":
-                if ($data) {
-                    $data = NullEliminator::array_null_eliminate((array)$data);
-                    $data = json_encode($data);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-                }
-                break;
-            case "GET":
-                if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
-                break;
+        try {
+            switch ($method) {
+                case "POST":
+                case "PUT":
+                case "DELETE":
+                    if ($data) {
+                        $data = NullEliminator::array_null_eliminate((array)$data);
+                        $body = json_encode($data);
+                    }
+                    break;
+                case "GET":
+                    if ($data) {
+                        $url .= '?' . http_build_query($data);
+                    }
+                    break;
+            }
+
+            $request = new Request($method, new Uri($url), $headers, $body);
+            $response = $this->httpClient->sendRequest($request);
+
+            $httpStatusCode = $response->getStatusCode();
+            $responseBody = (string) $response->getBody();
+            $jsonResult = json_decode($responseBody);
+
+            if ($httpStatusCode >= 400 && $httpStatusCode <= 500) {
+                $errorResponse = new ErrorResponse($jsonResult);
+                throw new BaseException($errorResponse->errorMessage, $errorResponse->errorCode);
+            } else if ($httpStatusCode != 200) {
+                throw new UnknownException("Unknown Http Error Occurred", $responseBody);
+            }
+
+            return $jsonResult;
+
+        } catch (ClientExceptionInterface $e) {
+            throw new CurlException($e->getMessage(), null, null, $e);
         }
-        $httpHeaders = array($authHeaderInfo, "Content-Type: application/json");
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $httpHeaders);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($curl);
-        $jsonResult = json_decode($result);
-
-        if (curl_errno($curl)) {
-            throw new CurlException(curl_error($curl));
-        }
-
-        $httpStatusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        if ($httpStatusCode >= 400 && $httpStatusCode <= 500) {
-            $errorResponse = new ErrorResponse($jsonResult);
-            throw new BaseException($errorResponse->errorMessage, $errorResponse->errorCode);
-        } else if ($httpStatusCode != 200) {
-            throw new UnknownException("Unknown Http Error Occurred", $result);
-        }
-        curl_close($curl);
-
-        return $jsonResult;
     }
 }

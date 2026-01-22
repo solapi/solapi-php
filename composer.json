@@ -1,7 +1,7 @@
 {
   "name": "solapi/sdk",
   "description": "SOLAPI SDK for PHP",
-  "version": "5.0.6",
+  "version": "5.1.0",
   "type": "library",
   "license": "MIT",
   "autoload": {
@@ -41,7 +41,9 @@
   "homepage": "https://solapi.com",
   "require": {
     "php": ">=7.1",
-    "ext-curl": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "psr/http-client": "^1.0",
+    "psr/http-message": "^1.0 || ^2.0",
+    "nyholm/psr7": "^1.5"
   }
 }
