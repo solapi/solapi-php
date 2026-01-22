@@ -52,6 +52,27 @@ SolapiMessageService → Fetcher (singleton) → Authenticator (static) → CURL
 - Default country code is "82" (Korea) in BaseMessage
 - Timezone hardcoded to Asia/Seoul in Authenticator
 
+## Tidy First Principles
+
+Follow Kent Beck's "Tidy First" principles when making code changes:
+
+**Core Principles:**
+- **Separate Structure from Behavior**: Separate structural changes (tidying) and behavioral changes (features) into distinct commits
+- **Tidy First**: Tidy related code before making feature changes to improve changeability
+- **Small Steps**: Keep tidying work completable within minutes to hours
+
+**Practical Techniques:**
+- Use guard clauses for early returns to eliminate nested if statements
+- Use helper variables/functions to clarify complex expressions
+- Keep related code physically close together
+- Express identical logic in identical ways (normalize symmetry)
+- Delete unused code immediately
+
+**When to Apply:**
+- Before adding new features, tidy the affected area
+- Before fixing bugs, clarify related code
+- During code review, identify tidying opportunities
+
 ## Important Behaviors
 
 - **Singleton State:** Fetcher singleton retains credentials - don't mix different API keys in the same process

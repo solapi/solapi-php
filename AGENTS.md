@@ -78,6 +78,11 @@ SolapiMessageService → Fetcher (singleton) → Authenticator (static)
 - Full type hints on method params/returns
 - PHPDoc `@var`, `@param`, `@return`, `@throws` annotations
 
+**Tidy First (Kent Beck):**
+- Separate structural and behavioral changes into distinct commits
+- Tidy related code before making feature changes
+- Guard clauses, helper variables/functions, code proximity, symmetry normalization, delete unused code
+
 ## ANTI-PATTERNS
 
 - **Avoid catch-all nulls:** Many get* methods return `null` on any exception — check response validity
