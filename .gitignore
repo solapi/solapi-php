@@ -1,5 +1,6 @@
 .DS_Store
 .vscode/
+.env
 log.txt
 out/
 *.swp
@@ -16,3 +17,6 @@ composer.phar
 # PHPUnit
 .phpunit.result.cache
 .phpunit.cache/
+
+# omc
+.omc/
