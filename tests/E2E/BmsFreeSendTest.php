@@ -341,9 +341,9 @@ class BmsFreeSendTest extends TestCase
 
         try {
             // Upload main image (2:1 ratio)
-            $mainImageId = $this->messageService->uploadFile($mainImagePath, 'BMS_WIDE_ITEM_LIST_MAIN');
+            $mainImageId = $this->messageService->uploadFile($mainImagePath, 'BMS_WIDE_MAIN_ITEM_LIST');
             // Upload sub images (1:1 ratio)
-            $subImageId = $this->messageService->uploadFile($subImagePath, 'BMS_WIDE_ITEM_LIST_SUB');
+            $subImageId = $this->messageService->uploadFile($subImagePath, 'BMS_WIDE_SUB_ITEM_LIST');
 
             $mainItem = new BmsMainWideItem();
             $mainItem->setImageId($mainImageId)
