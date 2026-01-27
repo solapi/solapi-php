@@ -1,12 +1,17 @@
 {
   "name": "solapi/sdk",
   "description": "SOLAPI SDK for PHP",
-  "version": "5.0.6",
+  "version": "5.1.0",
   "type": "library",
   "license": "MIT",
   "autoload": {
     "psr-4": {
       "Nurigo\\Solapi\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nurigo\\Solapi\\Tests\\": "tests/"
     }
   },
   "repositories": [
@@ -41,7 +46,18 @@
   "homepage": "https://solapi.com",
   "require": {
     "php": ">=7.1",
-    "ext-curl": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "psr/http-client": "^1.0",
+    "psr/http-message": "^1.0 || ^2.0",
+    "nyholm/psr7": "^1.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "scripts": {
+    "test": "phpunit",
+    "test:unit": "phpunit --testsuite=Unit",
+    "test:e2e": "phpunit --testsuite=E2E",
+    "test:coverage": "phpunit --coverage-text"
   }
 }

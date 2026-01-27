@@ -1,5 +1,6 @@
 .DS_Store
 .vscode/
+.env
 log.txt
 out/
 *.swp
@@ -12,3 +13,10 @@ debug/
 # Composer gitignore
 composer.phar
 /vendor/
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+
+# omc
+.omc/
