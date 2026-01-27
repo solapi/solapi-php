@@ -213,12 +213,13 @@ class BmsFreeSendTest extends TestCase
 
     /**
      * Test sending BMS FREE WIDE type
+     * Note: WIDE type requires 2:1 ratio image
      */
     public function testSendBmsWide(): void
     {
-        $imagePath = $this->getTestImagePath();
+        $imagePath = $this->getWideTestImagePath();
         if (!$imagePath) {
-            $this->markTestSkipped('Test image not found');
+            $this->markTestSkipped('Wide test image (2:1 ratio) not found');
         }
 
         try {
@@ -328,16 +329,21 @@ class BmsFreeSendTest extends TestCase
      */
     public function testSendBmsWideItemList(): void
     {
-        $imagePath = $this->getTestImagePath();
-        if (!$imagePath) {
-            $this->markTestSkipped('Test image not found');
+        $mainImagePath = $this->getWideTestImagePath();
+        $subImagePath = $this->getTestImagePath();
+
+        if (!$mainImagePath) {
+            $this->markTestSkipped('Wide test image (2:1 ratio) not found for main item');
+        }
+        if (!$subImagePath) {
+            $this->markTestSkipped('Square test image (1:1 ratio) not found for sub items');
         }
 
         try {
             // Upload main image (2:1 ratio)
-            $mainImageId = $this->messageService->uploadFile($imagePath, 'BMS_WIDE_ITEM_LIST_MAIN');
+            $mainImageId = $this->messageService->uploadFile($mainImagePath, 'BMS_WIDE_ITEM_LIST_MAIN');
             // Upload sub images (1:1 ratio)
-            $subImageId = $this->messageService->uploadFile($imagePath, 'BMS_WIDE_ITEM_LIST_SUB');
+            $subImageId = $this->messageService->uploadFile($subImagePath, 'BMS_WIDE_ITEM_LIST_SUB');
 
             $mainItem = new BmsMainWideItem();
             $mainItem->setImageId($mainImageId)
@@ -567,7 +573,7 @@ class BmsFreeSendTest extends TestCase
     }
 
     /**
-     * Get test image path
+     * Get test image path (1:1 ratio for IMAGE, COMMERCE, CAROUSEL types)
      */
     private function getTestImagePath(): ?string
     {
@@ -576,9 +582,29 @@ class BmsFreeSendTest extends TestCase
         }
 
         $possiblePaths = [
+            __DIR__ . '/../assets/example-1to1.jpg',
             __DIR__ . '/../../examples/images/example_square.jpg',
             __DIR__ . '/../../examples/images/example_wide.jpg',
             __DIR__ . '/../fixtures/test_image.jpg',
+        ];
+
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get wide test image path (2:1 ratio for WIDE, WIDE_ITEM_LIST main types)
+     */
+    private function getWideTestImagePath(): ?string
+    {
+        $possiblePaths = [
+            __DIR__ . '/../assets/example-2to1.jpg',
+            __DIR__ . '/../../examples/images/example_wide.jpg',
         ];
 
         foreach ($possiblePaths as $path) {
