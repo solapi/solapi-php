@@ -56,9 +56,7 @@ class Fetcher
      */
     public function request(string $method, string $uri, $data = false)
     {
-        $authHeaderInfo = Authenticator::getAuthorizationHeaderInfo($this->apiKey, $this->apiSecretKey);
-        $headerParts = explode(': ', $authHeaderInfo, 2);
-        $authHeaderValue = $headerParts[1] ?? $authHeaderInfo;
+        $authHeaderValue = Authenticator::getAuthorizationHeaderValue($this->apiKey, $this->apiSecretKey);
 
         $url = self::API_URL . $uri;
         $body = '';

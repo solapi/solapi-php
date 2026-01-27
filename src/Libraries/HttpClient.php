@@ -60,18 +60,46 @@ class HttpClient implements ClientInterface
 
         $context = stream_context_create($contextOptions);
 
-        $responseBody = @file_get_contents($url, false, $context);
+        // 커스텀 에러 핸들러로 에러 캡처 (@ 연산자 대신)
+        $errorMessage = null;
+        set_error_handler(function ($severity, $message) use (&$errorMessage) {
+            $errorMessage = $message;
+            return true; // 기본 에러 핸들러 실행 방지
+        });
+
+        $responseBody = file_get_contents($url, false, $context);
+
+        restore_error_handler();
+
+        // $http_response_header는 file_get_contents 호출 후 자동으로 설정됨
+        $httpResponseHeader = $http_response_header ?? [];
 
         if ($responseBody === false) {
-            $error = error_get_last();
-            throw new HttpException(
-                $error['message'] ?? 'HTTP request failed: ' . $url
-            );
+            // 에러 메시지에 더 상세한 정보 포함
+            $errorDetails = [];
+            
+            if ($errorMessage !== null) {
+                $errorDetails[] = $errorMessage;
+            }
+            
+            // HTTP 응답 헤더가 있으면 상태 정보 추가
+            if (!empty($httpResponseHeader)) {
+                $statusLine = $httpResponseHeader[0] ?? null;
+                if ($statusLine !== null) {
+                    $errorDetails[] = "Response: {$statusLine}";
+                }
+            }
+            
+            $detailedMessage = !empty($errorDetails) 
+                ? implode(' | ', $errorDetails)
+                : 'HTTP request failed: ' . $url;
+
+            throw new HttpException($detailedMessage);
         }
 
-        $statusCode = $this->parseStatusCode($http_response_header ?? []);
-        $reasonPhrase = $this->parseReasonPhrase($http_response_header ?? []);
-        $responseHeaders = $this->parseHeaders($http_response_header ?? []);
+        $statusCode = $this->parseStatusCode($httpResponseHeader);
+        $reasonPhrase = $this->parseReasonPhrase($httpResponseHeader);
+        $responseHeaders = $this->parseHeaders($httpResponseHeader);
 
         return new Response($statusCode, $responseHeaders, $responseBody, '1.1', $reasonPhrase);
     }
