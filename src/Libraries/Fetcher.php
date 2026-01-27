@@ -8,7 +8,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Nyholm\Psr7\Request;
 use Nyholm\Psr7\Uri;
 use Nurigo\Solapi\Exceptions\BaseException;
-use Nurigo\Solapi\Exceptions\CurlException;
+use Nurigo\Solapi\Exceptions\HttpException;
 use Nurigo\Solapi\Exceptions\UnknownException;
 use Nurigo\Solapi\Models\Response\ErrorResponse;
 
@@ -22,12 +22,11 @@ class Fetcher
 
     const API_URL = "https://api.solapi.com";
     const DEFAULT_TIMEOUT = 30.0;
-    const DEFAULT_CONNECT_TIMEOUT = 10.0;
 
-    public static function getInstance(string $apiKey, string $apiSecretKey): Fetcher
+    public static function getInstance(string $apiKey, string $apiSecretKey, ?ClientInterface $httpClient = null): Fetcher
     {
         if (!isset(Fetcher::$singleton)) {
-            Fetcher::$singleton = new Fetcher($apiKey, $apiSecretKey);
+            Fetcher::$singleton = new Fetcher($apiKey, $apiSecretKey, $httpClient);
         }
         return Fetcher::$singleton;
     }
@@ -38,7 +37,6 @@ class Fetcher
         $this->apiSecretKey = $apiSecretKey;
         $this->httpClient = $httpClient ?? new HttpClient([
             'timeout' => self::DEFAULT_TIMEOUT,
-            'connect_timeout' => self::DEFAULT_CONNECT_TIMEOUT,
             'verify' => true,
         ]);
     }
@@ -54,7 +52,7 @@ class Fetcher
      * @param string $uri
      * @param mixed $data
      * @return mixed
-     * @throws Exception|CurlException|BaseException|UnknownException
+     * @throws Exception|HttpException|BaseException|UnknownException
      */
     public function request(string $method, string $uri, $data = false)
     {
@@ -103,7 +101,7 @@ class Fetcher
             return $jsonResult;
 
         } catch (ClientExceptionInterface $e) {
-            throw new CurlException($e->getMessage(), null, null, $e);
+            throw new HttpException($e->getMessage(), null, null, $e);
         }
     }
 }

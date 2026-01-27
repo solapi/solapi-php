@@ -6,18 +6,16 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Nyholm\Psr7\Response;
-use Nurigo\Solapi\Exceptions\CurlException;
+use Nurigo\Solapi\Exceptions\HttpException;
 
 class HttpClient implements ClientInterface
 {
     protected $timeout;
-    protected $connectTimeout;
     protected $verifySsl;
 
     public function __construct(array $options = [])
     {
         $this->timeout = $options['timeout'] ?? 30.0;
-        $this->connectTimeout = $options['connect_timeout'] ?? 10.0;
         $this->verifySsl = $options['verify'] ?? true;
     }
 
@@ -66,11 +64,8 @@ class HttpClient implements ClientInterface
 
         if ($responseBody === false) {
             $error = error_get_last();
-            throw new CurlException(
-                $error['message'] ?? 'HTTP request failed: ' . $url,
-                null,
-                null,
-                null
+            throw new HttpException(
+                $error['message'] ?? 'HTTP request failed: ' . $url
             );
         }
 
