@@ -11,7 +11,7 @@ use Nurigo\Solapi\Models\Message;
 use Nurigo\Solapi\Services\SolapiMessageService;
 
 /**
- * 카카오 알림톡(이미지 알림톡 포함, 이미지 알림톡은 별도의 추가 파라미터가 없습니다) 발송 예제
+ * 카카오 브랜드 메시지 템플릿 유형 발송 예제
  * 수신번호에 반드시 -, * 등 특수문자를 제거하여 기입하셔야 합니다! 예) 01012345678
  */
 try {
