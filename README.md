@@ -22,9 +22,44 @@ composer require solapi/sdk
 
 ## Usage
 
-See [examples repository](https://github.com/solapi/solapi-php-examples)
+Examples live in `examples/` and are self-contained CLI scripts that load the root autoloader.
 
-[//]: # (TODO: Need to add next solapi document link)
+Run an example:
+
+```bash
+php examples/send_sms.php
+```
+
+Each example contains placeholders like `ENTER_YOUR_API_KEY` and `ENTER_YOUR_API_SECRET`.
+Replace those values before running.
+Image assets used by some examples are in `examples/images/`.
+
+**Examples**
+Inquiry:
+- `examples/get_balance.php` — get account balance
+- `examples/get_messages.php` — query message list with filters
+- `examples/get_statistics.php` — get message statistics
+
+SMS / LMS / MMS:
+- `examples/send_sms.php` — send SMS (auto-upgrades to LMS by length)
+- `examples/send_lms.php` — send LMS
+- `examples/send_mms.php` — send MMS with image
+- `examples/send_overseas_sms.php` — send overseas SMS
+
+Voice:
+- `examples/send_voice_message.php` — send voice message
+
+Kakao Alimtalk:
+- `examples/send_alimtalk.php` — send Alimtalk
+
+Kakao Brand Message (BMS):
+- `examples/send_brand_message.php` — send Brand Message
+- `examples/send_bms_free_text.php` — BMS FREE TEXT
+- `examples/send_bms_free_image.php` — BMS FREE IMAGE
+- `examples/send_bms_free_commerce.php` — BMS FREE COMMERCE
+- `examples/send_bms_free_carousel_feed.php` — BMS FREE CAROUSEL_FEED
+- `examples/send_bms_free_premium_video.php` — BMS FREE PREMIUM_VIDEO
+- `examples/send_bms_free_wide_item_list.php` — BMS FREE WIDE_ITEM_LIST
 
 ## Opening Issues
 
