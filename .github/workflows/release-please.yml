@@ -1,21 +1,141 @@
 name: release-please
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows: ["CI"]
+    branches: [master]
+    types: [completed]
 
 permissions:
   contents: write
   pull-requests: write
+  statuses: write
 
 jobs:
   release-please:
     name: Run release-please
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      pr_head_sha: ${{ steps.pr-sha.outputs.sha }}
     steps:
       - name: Run release-please
+        id: release
         uses: googleapis/release-please-action@v4
         with:
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get release-please PR head SHA
+        id: pr-sha
+        if: ${{ !steps.release.outputs.release_created }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          SHA=$(gh pr list \
+            --repo "$GH_REPO" \
+            --head release-please--branches--master \
+            --state open \
+            --json headRefOid \
+            --jq '.[0].headRefOid // ""')
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+  unit-test-release-pr:
+    name: Unit (Release PR) / PHP ${{ matrix.php }}
+    needs: release-please
+    if: ${{ !needs.release-please.outputs.release_created && needs.release-please.outputs.pr_head_sha != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+    env:
+      PHP_VERSION: ${{ matrix.php }}
+      SHA: ${{ needs.release-please.outputs.pr_head_sha }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Set pending commit status
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/$REPO/statuses/$SHA" \
+            -f state=pending \
+            -f context="Unit / PHP $PHP_VERSION" \
+            -f description="Running unit tests..."
+
+      - name: Checkout release-please PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.pr_head_sha }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: json, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Determine PHPUnit constraint
+        id: phpunit
+        run: |
+          case "$PHP_VERSION" in
+            7.1|7.2) echo "constraint=^7.5" >> "$GITHUB_OUTPUT" ;;
+            *)       echo "constraint=^9.5" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Resolve Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ steps.phpunit.outputs.constraint }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ steps.phpunit.outputs.constraint }}-
+            composer-${{ matrix.php }}-
+
+      - name: Allow legacy PHPUnit on PHP 7.1/7.2
+        if: matrix.php == '7.1' || matrix.php == '7.2'
+        run: composer config --no-plugins audit.block-insecure false || true
+
+      - name: Pin PHPUnit constraint
+        env:
+          PHPUNIT_CONSTRAINT: ${{ steps.phpunit.outputs.constraint }}
+        run: composer require --dev --no-update --no-interaction "phpunit/phpunit:$PHPUNIT_CONSTRAINT"
+
+      - name: Install dependencies
+        env:
+          COMPOSER_NO_AUDIT: "1"
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Run unit tests
+        run: composer test:unit
+
+      - name: Report success commit status
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/$REPO/statuses/$SHA" \
+            -f state=success \
+            -f context="Unit / PHP $PHP_VERSION" \
+            -f description="Unit tests passed"
+
+      - name: Report failure commit status
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/$REPO/statuses/$SHA" \
+            -f state=failure \
+            -f context="Unit / PHP $PHP_VERSION" \
+            -f description="Unit tests failed"
