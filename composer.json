@@ -35,11 +35,6 @@
     {
       "name": "Nurigo CX Team",
       "email": "contact@nurigo.net"
-    },
-    {
-      "name": "Subin Lee",
-      "email": "chandar.sblee@gmail.com",
-      "homepage": "https://subux.dev"
     }
   ],
   "minimum-stability": "stable",
