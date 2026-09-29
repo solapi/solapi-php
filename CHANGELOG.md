@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.1.4](https://github.com/solapi/solapi-php/compare/v5.1.3...v5.1.4) (2026-09-29)
+
+
+### Miscellaneous Chores
+
+* remove former employee personal contact from composer.json authors ([29a9df0](https://github.com/solapi/solapi-php/commit/29a9df0048cc8403aebfb6f4f21f50e62281246c))
+* remove former employee personal contact from composer.json authors ([0e6518d](https://github.com/solapi/solapi-php/commit/0e6518d7a476ca2f2b0416259dbbe0bec7cdd915))
+
 ## [5.1.3](https://github.com/solapi/solapi-php/compare/v5.1.2...v5.1.3) (2026-05-11)
 
 
