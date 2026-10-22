@@ -7,6 +7,7 @@ This package is 100% compatible with SOLAPI family services (Purple Book, Nurigo
 ## Requirements
 
 - PHP 7.1 or higher
+  - Security notice (2026-10-21): PHP2Shell (CVE-2026-109618, CVE-2026-109619) is a vulnerability in the PHP runtime itself, not in this SDK. Run PHP 8.2.35 / 8.3.36 / 8.4.27 / 8.5.12 or later; for PHP 8.1 and below, apply your distribution's security update.
 - `ext-json` extension
 - `allow_url_fopen` enabled in php.ini (for the default HTTP client)
 
