@@ -69,8 +69,8 @@ class GroupCountForCharge
         $this->lms = $value->lms ?? null;
         $this->mms = $value->mms ?? null;
         $this->ata = $value->ata ?? null;
-        $this->cta = $value->cta ?? null;
-        $this->cti = $value->cti ?? null;
+        $this->cta = $value->cta ?? (object) [];
+        $this->cti = $value->cti ?? (object) [];
         $this->nsa = $value->nsa ?? null;
         $this->rcs_sms = $value->rcs_sms ?? null;
         $this->rcs_lms = $value->rcs_lms ?? null;

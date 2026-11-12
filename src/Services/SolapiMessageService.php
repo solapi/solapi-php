@@ -51,7 +51,7 @@ class SolapiMessageService
             $messages = array($messages);
         }
         $requestParameter = new SendRequest($messages, $scheduledDateTime);
-        $result = $this->fetcherInstance->request("POST", "/messages/v4/send-many/detail", $requestParameter);
+        $result = $this->fetcherInstance->request("POST", "/messages/v4/send-many/fast", $requestParameter);
         $response = new SendResponse($result);
 
         $count = $response->groupInfo !== null ? $response->groupInfo->count : null;
@@ -140,7 +140,7 @@ class SolapiMessageService
     public function getGroup(string $groupId): ?GroupMessageResponse
     {
         try {
-            $result = $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId");
+            $result = $this->fetcherInstance->request("GET", "/messages/v4/groups/fast/$groupId");
             return $result !== null ? new GroupMessageResponse($result) : null;
         } catch (Exception $exception) {
             return null;
@@ -156,7 +156,7 @@ class SolapiMessageService
     public function getGroupMessages(string $groupId, ?GetGroupMessagesRequest $parameter = null): ?GetGroupMessagesResponse
     {
         try {
-            $result = $this->fetcherInstance->request("GET", "/messages/v4/groups/$groupId/messages", $parameter);
+            $result = $this->fetcherInstance->request("GET", "/messages/v4/groups/fast/$groupId/messages", $parameter);
             return $result !== null ? new GetGroupMessagesResponse($result) : null;
         } catch (Exception $exception) {
             return null;
