@@ -519,4 +519,37 @@ class ResponseConstructorTest extends TestCase
         $this->assertSame(0, $decoded['groupInfo']['app']['profit']['cta']);
         $this->assertSame(0, $decoded['groupInfo']['app']['profit']['cti']);
     }
+
+    // ---------- GroupCount: server key is sentTotal, SDK property is sendTotal ----------
+
+    /**
+     * @return array<string, array{0:array,1:?int}>
+     */
+    public function provideSentTotalKeyVariants(): array
+    {
+        return [
+            'server sentTotal lands in sendTotal' => [['sentTotal' => 7], 7],
+            'legacy sendTotal still accepted' => [['sendTotal' => 4], 4],
+            'sentTotal wins over sendTotal when both present' => [['sentTotal' => 7, 'sendTotal' => 4], 7],
+            'sentTotal zero is kept as zero' => [['sentTotal' => 0], 0],
+            'neither key gives null' => [['total' => 1], null],
+        ];
+    }
+
+    /**
+     * @dataProvider provideSentTotalKeyVariants
+     */
+    public function testGroupCountPopulatesSendTotalFromServerSentTotalKey(array $data, ?int $expected): void
+    {
+        $c = new GroupCount($this->obj($data));
+
+        $this->assertSame($expected, $c->sendTotal);
+    }
+
+    public function testSendResponseFixtureSentTotalReachesGroupCountSendTotal(): void
+    {
+        $r = new SendResponse($this->fastSendResponseFixture());
+
+        $this->assertSame(0, $r->groupInfo->count->sendTotal);
+    }
 }
