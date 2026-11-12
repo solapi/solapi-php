@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.2.0](https://github.com/solapi/solapi-php/compare/v5.1.4...v5.2.0) (2026-11-12)
+
+
+### Features
+
+* **messages:** 고속접수(fast) 엔드포인트 전환 및 GroupCount.sendTotal 매핑 수정 ([06c33ee](https://github.com/solapi/solapi-php/commit/06c33ee99c052db245f6a107271eb708b0a599b3))
+* **messages:** 발송·그룹 조회를 고속접수(fast) 엔드포인트로 전환 ([f16b3b4](https://github.com/solapi/solapi-php/commit/f16b3b4d6e855057c9c4c29238a5d94638b61c5c))
+
+
+### Bug Fixes
+
+* **models:** GroupCount.sendTotal을 서버 응답 키 sentTotal에서 매핑 ([00f2c18](https://github.com/solapi/solapi-php/commit/00f2c18575735711b2190b0499fdb1172a9ad8c5))
+
 ## [5.1.4](https://github.com/solapi/solapi-php/compare/v5.1.3...v5.1.4) (2026-09-29)
 
 
