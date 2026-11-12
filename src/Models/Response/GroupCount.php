@@ -55,7 +55,7 @@ class GroupCount
     public function __construct($value = null)
     {
         $this->total = $value->total ?? null;
-        $this->sendTotal = $value->sendTotal ?? null;
+        $this->sendTotal = $value->sentTotal ?? $value->sendTotal ?? null;
         $this->sentFailed = $value->sentFailed ?? null;
         $this->sentSuccess = $value->sentSuccess ?? null;
         $this->sentPending = $value->sentPending ?? null;

@@ -385,4 +385,171 @@ class ResponseConstructorTest extends TestCase
         $this->assertArrayHasKey('groupInfo', $decoded);
         $this->assertArrayHasKey('failedMessageList', $decoded);
     }
+
+    // ---------- Fast intake (send-many/fast, groups/fast): deprecated cta/cti keys are absent ----------
+
+    private function fastSendResponseFixture(): stdClass
+    {
+        return json_decode(file_get_contents(__DIR__ . '/../../assets/fast-send-response.json'));
+    }
+
+    public function testGroupCountForChargeDefaultsAbsentCtaCtiToEmptyObject(): void
+    {
+        $g = new GroupCountForCharge($this->obj(['sms' => ['82' => 1], 'lms' => []]));
+
+        $this->assertInstanceOf(stdClass::class, $g->cta);
+        $this->assertInstanceOf(stdClass::class, $g->cti);
+        $this->assertSame([], get_object_vars($g->cta));
+        $this->assertSame([], get_object_vars($g->cti));
+    }
+
+    public function testGroupCountForChargeKeepsCtaCtiWhenServerReturnsThem(): void
+    {
+        $g = new GroupCountForCharge($this->obj(['cta' => ['82' => 3], 'cti' => ['82' => 2]]));
+
+        $this->assertSame(3, $g->cta->{'82'});
+        $this->assertSame(2, $g->cti->{'82'});
+    }
+
+    public function testGroupCountForChargeDefaultsCtaCtiEvenWhenValueIsEmptyObject(): void
+    {
+        $g = new GroupCountForCharge($this->obj([]));
+
+        $this->assertSame([], get_object_vars($g->cta));
+        $this->assertSame([], get_object_vars($g->cti));
+        $this->assertNull($g->sms);
+    }
+
+    public function testGroupMessageResponseDefaultsAbsentAppProfitCtaCtiToZero(): void
+    {
+        $r = new GroupMessageResponse($this->obj([
+            'app' => ['profit' => ['sms' => 0, 'lms' => 0], 'appId' => null, 'version' => null],
+        ]));
+
+        $this->assertSame(0, $r->app->profit->cta);
+        $this->assertSame(0, $r->app->profit->cti);
+        $this->assertSame(0, $r->app->profit->sms);
+        $this->assertNull($r->app->appId);
+    }
+
+    public function testGroupMessageResponseKeepsAppProfitCtaCtiWhenPresent(): void
+    {
+        $r = new GroupMessageResponse($this->obj([
+            'app' => ['profit' => ['sms' => 0, 'cta' => 7, 'cti' => 9]],
+        ]));
+
+        $this->assertSame(7, $r->app->profit->cta);
+        $this->assertSame(9, $r->app->profit->cti);
+    }
+
+    /**
+     * @return array<string, array{0:array}>
+     */
+    public function provideAppShapesWithoutProfitObject(): array
+    {
+        return [
+            'app absent' => [[]],
+            'app null' => [['app' => null]],
+            'app without profit' => [['app' => ['appId' => 'A1', 'version' => null]]],
+            'profit null' => [['app' => ['profit' => null]]],
+            'profit scalar' => [['app' => ['profit' => 5]]],
+        ];
+    }
+
+    /**
+     * @dataProvider provideAppShapesWithoutProfitObject
+     */
+    public function testGroupMessageResponseLeavesAppUntouchedWhenProfitIsNotAnObject(array $data): void
+    {
+        $errors = [];
+        set_error_handler(static function ($severity, $message) use (&$errors) {
+            $errors[] = $message;
+            return true;
+        });
+
+        try {
+            $r = new GroupMessageResponse($this->obj($data));
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $errors);
+        $expected = $this->obj($data);
+        $this->assertEquals($expected->app ?? null, $r->app);
+    }
+
+    public function testSendResponseDecodesFastSendFixtureWithoutPhpNotices(): void
+    {
+        $errors = [];
+        set_error_handler(static function ($severity, $message) use (&$errors) {
+            $errors[] = $message;
+            return true;
+        });
+
+        try {
+            $r = new SendResponse($this->fastSendResponseFixture());
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $errors);
+        $this->assertSame('SEND-REQUESTED', $r->groupInfo->status);
+        $this->assertSame('G4V20260101000000TESTGROUP00000', $r->groupInfo->groupId);
+        $this->assertSame(1, $r->groupInfo->count->sentPending);
+        $this->assertSame([], $r->failedMessageList);
+    }
+
+    public function testSendResponseFillsFastSendDefaultsForDeprecatedCtaCti(): void
+    {
+        $r = new SendResponse($this->fastSendResponseFixture());
+
+        $this->assertSame([], get_object_vars($r->groupInfo->countForCharge->cta));
+        $this->assertSame([], get_object_vars($r->groupInfo->countForCharge->cti));
+        $this->assertSame(1, $r->groupInfo->countForCharge->sms->{'82'});
+        $this->assertSame(0, $r->groupInfo->app->profit->cta);
+        $this->assertSame(0, $r->groupInfo->app->profit->cti);
+    }
+
+    public function testSendResponseJsonSerializeIncludesDefaultedCtaCtiKeys(): void
+    {
+        $decoded = json_decode(json_encode(new SendResponse($this->fastSendResponseFixture())), true);
+
+        $this->assertSame([], $decoded['groupInfo']['countForCharge']['cta']);
+        $this->assertSame([], $decoded['groupInfo']['countForCharge']['cti']);
+        $this->assertSame(0, $decoded['groupInfo']['app']['profit']['cta']);
+        $this->assertSame(0, $decoded['groupInfo']['app']['profit']['cti']);
+    }
+
+    // ---------- GroupCount: server key is sentTotal, SDK property is sendTotal ----------
+
+    /**
+     * @return array<string, array{0:array,1:?int}>
+     */
+    public function provideSentTotalKeyVariants(): array
+    {
+        return [
+            'server sentTotal lands in sendTotal' => [['sentTotal' => 7], 7],
+            'legacy sendTotal still accepted' => [['sendTotal' => 4], 4],
+            'sentTotal wins over sendTotal when both present' => [['sentTotal' => 7, 'sendTotal' => 4], 7],
+            'sentTotal zero is kept as zero' => [['sentTotal' => 0], 0],
+            'neither key gives null' => [['total' => 1], null],
+        ];
+    }
+
+    /**
+     * @dataProvider provideSentTotalKeyVariants
+     */
+    public function testGroupCountPopulatesSendTotalFromServerSentTotalKey(array $data, ?int $expected): void
+    {
+        $c = new GroupCount($this->obj($data));
+
+        $this->assertSame($expected, $c->sendTotal);
+    }
+
+    public function testSendResponseFixtureSentTotalReachesGroupCountSendTotal(): void
+    {
+        $r = new SendResponse($this->fastSendResponseFixture());
+
+        $this->assertSame(0, $r->groupInfo->count->sendTotal);
+    }
 }

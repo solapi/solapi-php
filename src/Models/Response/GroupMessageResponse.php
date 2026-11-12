@@ -107,6 +107,10 @@ class GroupMessageResponse
         $this->balance = ResponseMapper::mapObject($value->balance ?? null, CommonCashResponse::class);
         $this->point = ResponseMapper::mapObject($value->point ?? null, CommonCashResponse::class);
         $this->app = $value->app ?? null;
+        if (isset($this->app->profit) && is_object($this->app->profit)) {
+            $this->app->profit->cta = $this->app->profit->cta ?? 0;
+            $this->app->profit->cti = $this->app->profit->cti ?? 0;
+        }
         $this->log = $value->log ?? null;
         $this->status = $value->status ?? null;
         $this->allowDuplicates = $value->allowDuplicates ?? null;

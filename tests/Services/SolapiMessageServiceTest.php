@@ -53,14 +53,14 @@ class SolapiMessageServiceTest extends TestCase
             'getGroup returns GroupMessageResponse, not stdClass' => [
                 'getGroup',
                 'GET',
-                '/messages/v4/groups/G4V01',
+                '/messages/v4/groups/fast/G4V01',
                 '{"groupId":"G4V01","status":"COMPLETE","accountId":"129"}',
                 GroupMessageResponse::class,
             ],
             'getGroupMessages returns GetGroupMessagesResponse, not stdClass' => [
                 'getGroupMessages',
                 'GET',
-                '/messages/v4/groups/G4V01/messages',
+                '/messages/v4/groups/fast/G4V01/messages',
                 '{"limit":20,"messageList":{},"startKey":null,"nextKey":"abc"}',
                 GetGroupMessagesResponse::class,
             ],
@@ -115,7 +115,7 @@ class SolapiMessageServiceTest extends TestCase
                 'registeredSuccess' => 8,
             ],
         ]);
-        $this->http->respondTo('GET', '/messages/v4/groups/G4V01', 200, $body);
+        $this->http->respondTo('GET', '/messages/v4/groups/fast/G4V01', 200, $body);
 
         $response = $this->service->getGroup('G4V01');
 
@@ -165,7 +165,7 @@ class SolapiMessageServiceTest extends TestCase
 
     public function testGetGroupHandlesMissingNestedObjectsAsNull(): void
     {
-        $this->http->respondTo('GET', '/messages/v4/groups/G4V01', 200, '{"groupId":"G4V01"}');
+        $this->http->respondTo('GET', '/messages/v4/groups/fast/G4V01', 200, '{"groupId":"G4V01"}');
 
         $response = $this->service->getGroup('G4V01');
 
@@ -236,8 +236,8 @@ class SolapiMessageServiceTest extends TestCase
         return [
             'getBalance 4xx returns null'   => ['getBalance', '/cash/v1/balance', 400, '{"errorCode":"E400","errorMessage":"bad"}'],
             'getBalance 5xx returns null'   => ['getBalance', '/cash/v1/balance', 500, ''],
-            'getGroup 404 returns null'     => ['getGroup', '/messages/v4/groups/G4V01', 404, '{"errorCode":"NotFound","errorMessage":"missing"}'],
-            'getGroupMessages 4xx null'     => ['getGroupMessages', '/messages/v4/groups/G4V01/messages', 401, '{"errorCode":"Unauthorized","errorMessage":"x"}'],
+            'getGroup 404 returns null'     => ['getGroup', '/messages/v4/groups/fast/G4V01', 404, '{"errorCode":"NotFound","errorMessage":"missing"}'],
+            'getGroupMessages 4xx null'     => ['getGroupMessages', '/messages/v4/groups/fast/G4V01/messages', 401, '{"errorCode":"Unauthorized","errorMessage":"x"}'],
             'getStatistics 5xx null'        => ['getStatistics', '/messages/v4/statistics', 502, ''],
             'getMessages 4xx null'          => ['getMessages', '/messages/v4/list', 403, '{"errorCode":"Forbidden","errorMessage":"x"}'],
             'getGroups 5xx null'            => ['getGroups', '/messages/v4/groups', 500, ''],
@@ -311,7 +311,7 @@ class SolapiMessageServiceTest extends TestCase
 
         $this->http->respondTo(
             'POST',
-            '/messages/v4/send-many/detail',
+            '/messages/v4/send-many/fast',
             200,
             '{"failedMessageList":[]}'
         );
@@ -337,7 +337,7 @@ class SolapiMessageServiceTest extends TestCase
                 ['to' => '01000000000', 'statusCode' => 'N000'],
             ],
         ]);
-        $this->http->respondTo('POST', '/messages/v4/send-many/detail', 200, $body);
+        $this->http->respondTo('POST', '/messages/v4/send-many/fast', 200, $body);
 
         $this->expectException(\Nurigo\Solapi\Exceptions\MessageNotReceivedException::class);
 
@@ -361,13 +361,13 @@ class SolapiMessageServiceTest extends TestCase
 
     public function testGetGroupMessagesAppendsGroupIdToPath(): void
     {
-        $this->http->respondTo('GET', '/messages/v4/groups/G4V123/messages', 200, '{"limit":20,"messageList":{}}');
+        $this->http->respondTo('GET', '/messages/v4/groups/fast/G4V123/messages', 200, '{"limit":20,"messageList":{}}');
 
         $this->service->getGroupMessages('G4V123');
 
         $this->assertCount(1, $this->http->receivedRequests);
         $this->assertSame(
-            '/messages/v4/groups/G4V123/messages',
+            '/messages/v4/groups/fast/G4V123/messages',
             $this->http->receivedRequests[0]->getUri()->getPath()
         );
     }
@@ -384,5 +384,165 @@ class SolapiMessageServiceTest extends TestCase
 
         $this->assertEquals($a, $b);
         $this->assertNotSame($a, $b, 'Each call should return a fresh instance');
+    }
+
+    // ---------- Fast intake routing: send / getGroup / getGroupMessages use the fast endpoints ----------
+
+    private function fastSendResponseBody(): string
+    {
+        return file_get_contents(__DIR__ . '/../assets/fast-send-response.json');
+    }
+
+    public function testSendIssuesPostToSendManyFastEndpoint(): void
+    {
+        $message = new \Nurigo\Solapi\Models\Message();
+        $message->setTo('01000000000')->setFrom('01087654321')->setText('hi');
+        $this->http->respondTo('POST', '/messages/v4/send-many/fast', 200, $this->fastSendResponseBody());
+
+        $this->service->send($message);
+
+        $this->assertCount(1, $this->http->receivedRequests);
+        $req = $this->http->receivedRequests[0];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame('/messages/v4/send-many/fast', $req->getUri()->getPath());
+        $this->assertSame('', $req->getUri()->getQuery());
+        $body = json_decode((string) $req->getBody(), true);
+        $this->assertSame('01000000000', $body['messages'][0]['to']);
+    }
+
+    public function testSendDecodesFastResponseWithoutCtaCtiAndReportsSendRequested(): void
+    {
+        $message = new \Nurigo\Solapi\Models\Message();
+        $message->setTo('01000000000')->setFrom('01087654321')->setText('hi');
+        $this->http->respondTo('POST', '/messages/v4/send-many/fast', 200, $this->fastSendResponseBody());
+
+        $errors = [];
+        set_error_handler(static function ($severity, $message) use (&$errors) {
+            $errors[] = $message;
+            return true;
+        });
+        try {
+            $response = $this->service->send($message);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $errors);
+        $this->assertSame('SEND-REQUESTED', $response->groupInfo->status);
+        $this->assertSame(1, $response->groupInfo->count->sentPending);
+        $this->assertSame([], get_object_vars($response->groupInfo->countForCharge->cta));
+        $this->assertSame([], get_object_vars($response->groupInfo->countForCharge->cti));
+        $this->assertSame(0, $response->groupInfo->app->profit->cta);
+        $this->assertSame(0, $response->groupInfo->app->profit->cti);
+        $this->assertSame([], $response->failedMessageList);
+    }
+
+    public function testSendDoesNotFallBackToDetailEndpointWhenFastEndpointFails(): void
+    {
+        $message = new \Nurigo\Solapi\Models\Message();
+        $message->setTo('01000000000')->setFrom('01087654321')->setText('hi');
+        $this->http->respondTo('POST', '/messages/v4/send-many/detail', 200, $this->fastSendResponseBody());
+        $this->http->respondTo('POST', '/messages/v4/send-many/fast', 400, '{"errorCode":"ValidationError","errorMessage":"bad"}');
+
+        try {
+            $this->service->send($message);
+            $this->fail('send() must surface the fast endpoint error');
+        } catch (\Nurigo\Solapi\Exceptions\BaseException $e) {
+            $this->assertSame('ValidationError', $e->errorCode);
+        }
+
+        $this->assertCount(1, $this->http->receivedRequests);
+        $this->assertSame('/messages/v4/send-many/fast', $this->http->receivedRequests[0]->getUri()->getPath());
+    }
+
+    public function testGetGroupIssuesGetToFastGroupEndpoint(): void
+    {
+        $groupId = 'G4V20260101000000TESTGROUP00000';
+        $groupBody = json_encode(json_decode($this->fastSendResponseBody())->groupInfo);
+        $this->http->respondTo('GET', "/messages/v4/groups/fast/$groupId", 200, $groupBody);
+
+        $response = $this->service->getGroup($groupId);
+
+        $this->assertCount(1, $this->http->receivedRequests);
+        $req = $this->http->receivedRequests[0];
+        $this->assertSame('GET', $req->getMethod());
+        $this->assertSame("/messages/v4/groups/fast/$groupId", $req->getUri()->getPath());
+        $this->assertSame('', $req->getUri()->getQuery());
+        $this->assertSame('SEND-REQUESTED', $response->status);
+        $this->assertSame([], get_object_vars($response->countForCharge->cta));
+        $this->assertSame(0, $response->app->profit->cti);
+    }
+
+    public function testGetGroupReturnsNullForNonExistentGroupOnFastEndpoint(): void
+    {
+        $this->http->respondTo(
+            'GET',
+            '/messages/v4/groups/fast/G4VNOPE',
+            404,
+            '{"errorCode":"ResourceNotFound","errorMessage":"리소스를 찾을 수 없습니다."}'
+        );
+
+        $this->assertNull($this->service->getGroup('G4VNOPE'));
+        $this->assertSame('/messages/v4/groups/fast/G4VNOPE', $this->http->receivedRequests[0]->getUri()->getPath());
+    }
+
+    public function testGetGroupMessagesIssuesGetToFastGroupMessagesEndpointWithUnchangedQuery(): void
+    {
+        $this->http->respondTo('GET', '/messages/v4/groups/fast/G4V123/messages', 200, '{"limit":2,"messageList":{},"startKey":"M4V01","nextKey":null}');
+        $parameter = new \Nurigo\Solapi\Models\Request\GetGroupMessagesRequest();
+        $parameter->setStartKey('M4V01')->setLimit(2);
+
+        $response = $this->service->getGroupMessages('G4V123', $parameter);
+
+        $this->assertCount(1, $this->http->receivedRequests);
+        $req = $this->http->receivedRequests[0];
+        $this->assertSame('GET', $req->getMethod());
+        $this->assertSame('/messages/v4/groups/fast/G4V123/messages', $req->getUri()->getPath());
+        parse_str($req->getUri()->getQuery(), $query);
+        $this->assertSame(['startKey' => 'M4V01', 'limit' => '2'], $query);
+        $this->assertSame(2, $response->limit);
+        $this->assertSame('M4V01', $response->startKey);
+    }
+
+    public function testGetGroupMessagesReturnsEmptyListForNonExistentGroupOnFastEndpoint(): void
+    {
+        $this->http->respondTo('GET', '/messages/v4/groups/fast/G4VNOPE/messages', 200, '{"startKey":null,"limit":20,"messageList":{}}');
+
+        $response = $this->service->getGroupMessages('G4VNOPE');
+
+        $this->assertInstanceOf(GetGroupMessagesResponse::class, $response);
+        $this->assertSame([], $response->messageList);
+    }
+
+    public function testGetGroupMessagesExposesCustomFieldsOnFastItems(): void
+    {
+        $body = json_encode([
+            'limit' => 20,
+            'messageList' => [
+                'M4V01' => ['messageId' => 'M4V01', 'statusCode' => '2000', 'customFields' => ['orderId' => '42']],
+            ],
+        ]);
+        $this->http->respondTo('GET', '/messages/v4/groups/fast/G4V123/messages', 200, $body);
+
+        $response = $this->service->getGroupMessages('G4V123');
+
+        $this->assertCount(1, $response->messageList);
+        $this->assertSame('42', $response->messageList[0]->customFields->orderId);
+    }
+
+    public function testGetMessagesAndStatisticsStillUseLegacyEndpoints(): void
+    {
+        $this->http->respondTo('GET', '/messages/v4/list', 200, '{"limit":20,"messageList":{}}');
+        $this->http->respondTo('GET', '/messages/v4/groups', 200, '{"limit":20,"groupList":{}}');
+        $this->http->respondTo('GET', '/messages/v4/statistics', 200, '{"balance":0,"point":0}');
+
+        $this->service->getMessages();
+        $this->service->getGroups();
+        $this->service->getStatistics();
+
+        $paths = array_map(static function ($req) {
+            return $req->getUri()->getPath();
+        }, $this->http->receivedRequests);
+        $this->assertSame(['/messages/v4/list', '/messages/v4/groups', '/messages/v4/statistics'], $paths);
     }
 }
